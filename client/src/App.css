@@ -1281,3 +1281,718 @@
   border: 1px solid #cbd5e1;
   border-radius: 0.375rem;
 }
+
+/* --- Template Preview Styles --- */
+.sample-card {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.sample-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  border-color: #cbd5e1;
+}
+
+.sample-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.sample-preview {
+  width: 100%;
+  aspect-ratio: 8.5/11;
+  background-color: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.sample-info {
+  padding: 1.25rem;
+}
+
+.sample-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.sample-desc {
+  font-size: 0.875rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+/* Mock Resume Document Base Styles */
+.mock-doc {
+  width: 100%;
+  height: 100%;
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.375rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  font-size: 0.5rem;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mock-header {
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--accent-color, #0f172a);
+}
+
+.mock-name {
+  font-size: 1em;
+  font-weight: 700;
+  color: var(--accent-color, #0f172a);
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.02em;
+}
+
+.mock-contact {
+  font-size: 0.7em;
+  color: #64748b;
+}
+
+.mock-body {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.mock-main {
+  flex: 2;
+}
+
+.mock-sidebar {
+  flex: 1;
+  padding-left: 0.5rem;
+  border-left: 1px solid #e2e8f0;
+}
+
+.mock-section-title {
+  font-size: 0.75em;
+  font-weight: 700;
+  color: var(--accent-color, #0f172a);
+  margin-bottom: 0.25rem;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mock-section-title:first-child {
+  margin-top: 0;
+}
+
+.mock-job-title {
+  font-size: 0.8em;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.15rem;
+}
+
+.mock-company {
+  font-size: 0.7em;
+  color: #64748b;
+  margin-bottom: 0.25rem;
+}
+
+.mock-text-sm {
+  font-size: 0.65em;
+  color: #475569;
+  margin-bottom: 0.15rem;
+  line-height: 1.3;
+}
+
+/* Template Layout Variations - Professional */
+.mock-doc.professional {
+  border-width: 2px;
+  border-color: var(--accent-color, #0f172a);
+}
+
+.mock-doc.professional .mock-header {
+  text-align: center;
+  border-bottom-width: 2px;
+}
+
+/* Template Layout Variations - Standout */
+.mock-doc.standout .mock-name {
+  font-size: 1.2em;
+  background: var(--accent-color, #3b82f6);
+  color: white;
+  margin: -0.75rem -0.75rem 0.5rem -0.75rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.mock-doc.standout .mock-header {
+  border-bottom: none;
+}
+
+/* Template Layout Variations - Elegant */
+.mock-doc.elegant {
+  background: linear-gradient(to right, var(--accent-color, #1e293b) 30%, white 30%);
+  padding: 0;
+}
+
+.mock-doc.elegant .mock-header {
+  background: var(--accent-color, #1e293b);
+  color: white;
+  padding: 0.75rem;
+  margin: 0;
+  border-bottom: none;
+}
+
+.mock-doc.elegant .mock-name {
+  color: white;
+}
+
+.mock-doc.elegant .mock-contact {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mock-doc.elegant .mock-body {
+  background: white;
+  padding: 0.75rem;
+}
+
+/* Template Layout Variations - Official */
+.mock-doc.official .mock-header {
+  background: var(--accent-color, #1e40af);
+  color: white;
+  margin: -0.75rem -0.75rem 0.5rem -0.75rem;
+  padding: 0.75rem;
+  border-bottom: none;
+}
+
+.mock-doc.official .mock-name {
+  color: white;
+}
+
+.mock-doc.official .mock-contact {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Template Layout Variations - Simple */
+.mock-doc.simple {
+  border: none;
+  box-shadow: none;
+}
+
+.mock-doc.simple .mock-header {
+  border-bottom: 2px solid #e2e8f0;
+}
+
+/* Template Layout Variations - Creative */
+.mock-doc.creative {
+  border: 3px solid var(--accent-color, #06b6d4);
+  border-radius: 0.75rem;
+}
+
+.mock-doc.creative .mock-section-title {
+  background: var(--accent-color, #06b6d4);
+  color: white;
+  padding: 0.15rem 0.3rem;
+  border-radius: 0.15rem;
+  display: inline-block;
+}
+
+/* Template Layout Variations - Technical */
+.mock-doc.technical .mock-header {
+  border-left: 4px solid var(--accent-color, #14b8a6);
+  padding-left: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* Template Layout Variations - Modern */
+.mock-doc.modern {
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.mock-doc.modern .mock-section-title {
+  border-bottom: 2px solid var(--accent-color, #1e40af);
+  padding-bottom: 0.15rem;
+  display: inline-block;
+}
+
+/* Template Layout Variations - Column */
+.mock-doc.column .mock-body {
+  flex-direction: column;
+}
+
+.mock-doc.column .mock-sidebar {
+  border-left: none;
+  border-top: 1px solid #e2e8f0;
+  padding-left: 0;
+  padding-top: 0.5rem;
+}
+
+
+/* --- Resume Paper Template Variations (Full Resume Styles) --- */
+/* These match the preview styles but for the full-size resume */
+
+/* Professional Template */
+.resume-paper.professional {
+  border: 3px solid var(--template-color, #0f172a);
+  padding: 3rem;
+}
+
+.resume-paper.professional .resume-header {
+  text-align: center !important;
+  border-bottom-width: 3px !important;
+}
+
+/* Standout Template */
+.resume-paper.standout .resume-name {
+  background: var(--template-color, #3b82f6);
+  color: white !important;
+  margin: -3rem -3rem 2rem -3rem;
+  padding: 2rem 3rem;
+}
+
+.resume-paper.standout .resume-contact-line {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.resume-paper.standout .resume-header {
+  border-bottom: none !important;
+}
+
+/* Elegant Template */
+.resume-paper.elegant {
+  background: linear-gradient(to right, var(--template-color, #1e293b) 30%, white 30%);
+  display: flex;
+  padding: 0;
+}
+
+.resume-paper.elegant::before {
+  content: '';
+  width: 30%;
+  background: var(--template-color, #1e293b);
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+
+.resume-paper.elegant .resume-header {
+  background: var(--template-color, #1e293b);
+  color: white !important;
+  padding: 3rem;
+  margin: 0;
+  border-bottom: none !important;
+  position: relative;
+  z-index: 1;
+}
+
+.resume-paper.elegant .resume-name {
+  color: white !important;
+}
+
+.resume-paper.elegant .resume-contact-line {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.resume-paper.elegant .resume-section {
+  padding: 0 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Official Template */
+.resume-paper.official .resume-header {
+  background: var(--template-color, #1e40af);
+  color: white !important;
+  margin: -3rem -3rem 2rem -3rem;
+  padding: 3rem;
+  border-bottom: none !important;
+}
+
+.resume-paper.official .resume-name {
+  color: white !important;
+}
+
+.resume-paper.official .resume-contact-line {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Simple Template */
+.resume-paper.simple {
+  border: none;
+  box-shadow: none;
+  padding: 3rem;
+}
+
+.resume-paper.simple .resume-header {
+  border-bottom: 3px solid #e2e8f0 !important;
+}
+
+/* Creative Template */
+.resume-paper.creative {
+  border: 4px solid var(--template-color, #06b6d4);
+  border-radius: 1rem;
+  padding: 3rem;
+}
+
+.resume-paper.creative .resume-section-title {
+  background: var(--template-color, #06b6d4);
+  color: white !important;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  display: inline-block;
+  border-bottom: none !important;
+}
+
+/* Technical Template */
+.resume-paper.technical {
+  padding: 3rem;
+}
+
+.resume-paper.technical .resume-header {
+  border-left: 6px solid var(--template-color, #14b8a6);
+  padding-left: 2rem;
+  border-bottom: 2px solid #e2e8f0 !important;
+}
+
+/* Modern Template */
+.resume-paper.modern {
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 3rem;
+}
+
+.resume-paper.modern .resume-section-title {
+  border-bottom: 3px solid var(--template-color, #1e40af) !important;
+  padding-bottom: 0.5rem;
+  display: inline-block;
+}
+
+/* Column Template */
+.resume-paper.column {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3rem;
+  padding: 3rem;
+}
+
+.resume-paper.column .section-skills,
+.resume-paper.column .section-education {
+  grid-column: 2;
+}
+
+
+/* --- Text Alignment Adjustments for Templates --- */
+
+/* Professional - Center aligned header */
+.resume-paper.professional .resume-name,
+.resume-paper.professional .resume-contact-line {
+  text-align: center;
+}
+
+/* Standout - Left aligned content with bold sections */
+.resume-paper.standout .resume-section-title {
+  text-align: left;
+  font-size: 1.25rem;
+}
+
+/* Elegant - Two column layout with sidebar */
+.resume-paper.elegant {
+  display: grid;
+  grid-template-columns: 35% 65%;
+  gap: 0;
+}
+
+.resume-paper.elegant .resume-header {
+  grid-column: 1 / -1;
+}
+
+.resume-paper.elegant .section-summary,
+.resume-paper.elegant .section-experience {
+  grid-column: 2;
+  padding: 2rem 3rem 2rem 2rem;
+}
+
+.resume-paper.elegant .section-education,
+.resume-paper.elegant .section-skills {
+  grid-column: 1;
+  padding: 2rem 2rem 2rem 3rem;
+  background: rgba(0, 0, 0, 0.02);
+}
+
+/* Official - Centered header, justified text */
+.resume-paper.official .resume-name,
+.resume-paper.official .resume-contact-line {
+  text-align: center;
+}
+
+.resume-paper.official .resume-text {
+  text-align: justify;
+}
+
+/* Simple - Clean left alignment */
+.resume-paper.simple .resume-section-title {
+  text-transform: none;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Creative - Right aligned section titles with content left */
+.resume-paper.creative .resume-section-title {
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.resume-paper.creative .item-title {
+  color: var(--template-color, #06b6d4);
+}
+
+/* Technical - Compact spacing, monospace for specific elements */
+.resume-paper.technical .resume-section-title {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.1em;
+}
+
+.resume-paper.technical .resume-text {
+  line-height: 1.8;
+}
+
+/* Modern - Clean spacing with centered name */
+.resume-paper.modern .resume-name {
+  text-align: center;
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.resume-paper.modern .resume-contact-line {
+  text-align: center;
+}
+
+/* Column - Two column grid layout */
+.resume-paper.column {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 3rem;
+  padding: 3rem;
+}
+
+.resume-paper.column .resume-header {
+  grid-column: 1 / -1;
+}
+
+.resume-paper.column .section-summary,
+.resume-paper.column .section-experience {
+  grid-column: 1;
+}
+
+.resume-paper.column .section-skills,
+.resume-paper.column .section-education {
+  grid-column: 2;
+  grid-row: 2 / 5;
+}
+
+.resume-paper.column .resume-section-title {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+/* Template Alignment Fixes */
+
+/* Fix: Reset text alignment for templates that should be left-aligned */
+.resume-paper.standout .resume-name,
+.resume-paper.standout .resume-contact-line,
+.resume-paper.technical .resume-name,
+.resume-paper.technical .resume-contact-line,
+.resume-paper.simple .resume-name,
+.resume-paper.simple .resume-contact-line,
+.resume-paper.creative .resume-name,
+.resume-paper.creative .resume-contact-line {
+    text-align: left !important;
+}
+
+/* Fix: Elegant template - prevent content from being hidden */
+.resume-paper.elegant {
+    display: block !important;
+    background: white;
+    padding: 3rem;
+    border-left: 8px solid var(--template-color, #1e293b);
+}
+
+.resume-paper.elegant .resume-header {
+    border-left: none;
+    padding-left: 0;
+    text-align: left;
+}
+
+.resume-paper.elegant .resume-section-title {
+    color: var(--template-color, #1e293b) !important;
+    border-bottom-color: var(--template-color, #1e293b) !important;
+}
+
+/* Fix: Remove duplicate column definition and simplify */
+.resume-paper.column {
+    padding: 3rem !important;
+    display: block !important;
+}
+
+.resume-paper.column .resume-header {
+    text-align: left;
+}
+
+/* Fix: Ensure all templates respect padding */
+.resume-paper {
+    padding: 3rem;
+    position: relative;
+}
+/* Elegant Template Grid Layout Fix */
+
+/* Reset display to grid for Elegant template */
+.resume-paper.elegant {
+    display: grid !important;
+    grid-template-columns: 35% 65%;
+    grid-template-rows: auto 1fr;
+    /* Header row, then content */
+    gap: 0;
+    padding: 0 !important;
+    /* Remove padding from container */
+    background: white;
+    position: relative;
+    overflow: hidden;
+    /* Ensure pseudo-element doesn't overflow */
+}
+
+/* Sidebar Background using pseudo-element */
+.resume-paper.elegant::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 35%;
+    background: var(--template-color, #1e293b);
+    z-index: 0;
+}
+
+/* Header - Spans full width visually, but content needs to be placed */
+/* We'll place Header in the Sidebar (Col 1) as requested "data in black space" */
+.resume-paper.elegant .resume-header {
+    grid-column: 1;
+    grid-row: 1;
+    background: transparent !important;
+    /* Background handled by pseudo-element */
+    color: white !important;
+    padding: 3rem 2rem;
+    margin: 0 !important;
+    border-bottom: none !important;
+    position: relative;
+    z-index: 1;
+    text-align: left;
+}
+
+.resume-paper.elegant .resume-name {
+    color: white !important;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.resume-paper.elegant .resume-contact-line {
+    color: rgba(255, 255, 255, 0.8) !important;
+    display: block;
+    /* Stack contact info */
+    margin-bottom: 0.5rem;
+}
+
+/* Sidebar Content (Skills, Education) - Place in Col 1 */
+.resume-paper.elegant .section-skills,
+.resume-paper.elegant .section-education {
+    grid-column: 1;
+    grid-row: auto;
+    /* Auto flow in Col 1 */
+    padding: 0 2rem 2rem 2rem;
+    position: relative;
+    z-index: 1;
+    color: white;
+    /* Text needs to be white in sidebar */
+}
+
+.resume-paper.elegant .section-skills .resume-section-title,
+.resume-paper.elegant .section-education .resume-section-title {
+    color: white !important;
+    border-bottom-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.resume-paper.elegant .item-title,
+.resume-paper.elegant .item-subtitle,
+.resume-paper.elegant .item-date {
+    color: white !important;
+}
+
+.resume-paper.elegant .skills-grid span {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Main Content (Summary, Experience) - Place in Col 2 */
+.resume-paper.elegant .section-summary,
+.resume-paper.elegant .section-experience {
+    grid-column: 2;
+    grid-row: auto;
+    /* Auto flow in Col 2 */
+    padding: 3rem 3rem 1rem 3rem;
+    /* Top padding to align with sidebar content */
+    position: relative;
+    z-index: 1;
+}
+
+/* Adjust Row Spanning */
+/* If Header is only in Col 1, Col 2 needs to start at Row 1 */
+.resume-paper.elegant .section-summary {
+    grid-row: 1;
+    /* Start at top */
+    margin-top: 3rem;
+    /* Match header top padding */
+}
+
+.resume-paper.elegant .section-experience {
+    grid-row: 2;
+}
+
+/* Fix for Column Template as well */
+.resume-paper.column {
+    display: grid !important;
+    grid-template-columns: 65% 35%;
+    /* Main content left, Sidebar right */
+    gap: 0;
+    padding: 0 !important;
+}
+
+.resume-paper.column .resume-header {
+    grid-column: 1 / -1;
+    padding: 3rem;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.resume-paper.column .section-summary,
+.resume-paper.column .section-experience {
+    grid-column: 1;
+    padding: 2rem 3rem;
+}
+
+.resume-paper.column .section-skills,
+.resume-paper.column .section-education {
+    grid-column: 2;
+    padding: 2rem;
+    background: #f8fafc;
+    height: 100%;
+}

@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import html2pdf from 'html2pdf.js';
+import { seniorProductManagerData } from './mockData';
 
 function StartScratch() {
     const [activeSection, setActiveSection] = useState('contact');
@@ -19,7 +20,7 @@ function StartScratch() {
         phone: "(123) 456-7890",
         location: "New York, NY",
         linkedin: "linkedin.com/in/johndoe",
-        summary: "A highly motivated and creative Senior Product Designer with over 8 years of experience...",
+        summary: "A highly motivated and creative Senior Product Designer with over 8 years of experience in creating user-centered digital products. Proven track record of leading design teams, conducting user research, and delivering innovative solutions that drive business growth and enhance user satisfaction.",
         experience: [
             {
                 id: 1,
@@ -27,7 +28,15 @@ function StartScratch() {
                 date: "Jan 2020 - Present",
                 company: "TechSolutions Inc.",
                 location: "San Francisco, CA",
-                description: "Led the redesign of the company's flagship product. Collaborated with cross-functional teams."
+                description: "Led the redesign of the company's flagship product, increasing user engagement by 40%.\nCollaborated with cross-functional teams to define product vision and strategy.\nConducted user research and usability testing to inform design decisions.\nMentored junior designers and established design system best practices."
+            },
+            {
+                id: 2,
+                title: "Product Designer",
+                date: "Jun 2016 - Dec 2019",
+                company: "Creative Digital Agency",
+                location: "New York, NY",
+                description: "Designed and launched mobile applications for Fortune 500 clients.\nCreated wireframes, prototypes, and high-fidelity mockups using Figma and Adobe XD.\nImproved user satisfaction scores by 35% through iterative design improvements.\nCollaborated with developers to ensure design implementation quality."
             }
         ],
         education: [
@@ -37,9 +46,16 @@ function StartScratch() {
                 date: "May 2016",
                 school: "University of Design",
                 location: "Artsfield"
+            },
+            {
+                id: 2,
+                degree: "Certificate in UX Design",
+                date: "Dec 2018",
+                school: "Design Institute",
+                location: "Online"
             }
         ],
-        skills: ["Figma", "Adobe XD", "React", "HTML/CSS", "User Research", "Prototyping"],
+        skills: ["Figma", "Adobe XD", "React", "HTML/CSS", "User Research", "Prototyping", "Sketch", "InVision", "Agile Methodology", "Design Systems", "Wireframing", "A/B Testing"],
         projects: []
     });
 
@@ -52,7 +68,7 @@ function StartScratch() {
         fontSize: 14
     });
 
-    // --- Load Data from Optimize Page ---
+    // --- Load Data from Optimize Page or Recommended Template ---
     useEffect(() => {
         if (location.state && location.state.resumeData) {
             const parsed = location.state.resumeData;
@@ -64,6 +80,16 @@ function StartScratch() {
                 summary: parsed.summary || prev.summary,
                 experience: parsed.experience && parsed.experience.length > 0 ? parsed.experience.map((e, i) => ({ ...e, id: i })) : prev.experience,
                 education: parsed.education && parsed.education.length > 0 ? parsed.education.map((e, i) => ({ ...e, id: i })) : prev.education
+            }));
+        }
+
+        // Apply recommended template if coming from Browse Samples
+        if (location.state && location.state.recommendedTemplate) {
+            const { layout, color } = location.state.recommendedTemplate;
+            setDesignConfig(prev => ({
+                ...prev,
+                template: layout,
+                color: color
             }));
         }
     }, [location.state]);
@@ -249,6 +275,9 @@ function StartScratch() {
                     <button className="download-btn" onClick={handleDownload}>
                         <Download size={16} style={{ marginRight: '0.5rem' }} /> Download PDF
                     </button>
+                    <button className="icon-btn" onClick={() => setResumeData(seniorProductManagerData)} title="Load Mock Data">
+                        <Folder size={18} />
+                    </button>
                     <button className="icon-btn"><Share2 size={18} /></button>
                 </div>
             </header>
@@ -295,7 +324,8 @@ function StartScratch() {
                             fontFamily: designConfig.font,
                             lineHeight: designConfig.spacing,
                             fontSize: `${designConfig.fontSize}px`,
-                            color: '#1e293b'
+                            color: '#1e293b',
+                            '--template-color': designConfig.color
                         }}
                     >
                         {/* Resume Header */}
@@ -309,14 +339,14 @@ function StartScratch() {
 
                         {/* Summary */}
                         {resumeData.summary && (
-                            <div className="resume-section">
+                            <div className="resume-section section-summary">
                                 <h2 className="resume-section-title" style={{ color: designConfig.color, borderBottomColor: designConfig.color }}>Professional Summary</h2>
                                 <p className="resume-text">{resumeData.summary}</p>
                             </div>
                         )}
 
                         {/* Experience */}
-                        <div className="resume-section">
+                        <div className="resume-section section-experience">
                             <h2 className="resume-section-title" style={{ color: designConfig.color, borderBottomColor: designConfig.color }}>Work Experience</h2>
                             {resumeData.experience.map((exp) => (
                                 <div key={exp.id} className="resume-item">
@@ -331,7 +361,7 @@ function StartScratch() {
                         </div>
 
                         {/* Education */}
-                        <div className="resume-section">
+                        <div className="resume-section section-education">
                             <h2 className="resume-section-title" style={{ color: designConfig.color, borderBottomColor: designConfig.color }}>Education</h2>
                             {resumeData.education.map((edu) => (
                                 <div key={edu.id} className="resume-item">
@@ -345,7 +375,7 @@ function StartScratch() {
                         </div>
 
                         {/* Skills */}
-                        <div className="resume-section">
+                        <div className="resume-section section-skills">
                             <h2 className="resume-section-title" style={{ color: designConfig.color, borderBottomColor: designConfig.color }}>Skills</h2>
                             <div className="skills-grid" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                                 {resumeData.skills.map((skill, i) => (
