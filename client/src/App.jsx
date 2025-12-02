@@ -4,6 +4,7 @@ import UploadOptimize from './UploadOptimize';
 import StartScratch from './StartScratch';
 import JobMatch from './JobMatch';
 import BrowseSamples from './BrowseSamples';
+import ChooseTemplate from './ChooseTemplate';
 import './App.css';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/start-scratch" element={<StartScratch />} />
         <Route path="/job-match" element={<JobMatch />} />
         <Route path="/browse-samples" element={<BrowseSamples />} />
+        <Route path="/choose-template" element={<ChooseTemplate />} />
       </Routes>
     </Router>
   );
