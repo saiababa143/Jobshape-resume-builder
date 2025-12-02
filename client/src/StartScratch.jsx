@@ -6,6 +6,7 @@ import {
 import { Link, useLocation } from 'react-router-dom';
 import html2pdf from 'html2pdf.js';
 import { seniorProductManagerData } from './mockData';
+import AIAssistant from './AIAssistant';
 
 function StartScratch() {
     const [activeSection, setActiveSection] = useState('contact');
@@ -456,9 +457,7 @@ function StartScratch() {
                         )}
 
                         {activeTab === 'ai' && (
-                            <div style={{ textAlign: 'center', color: '#64748b', marginTop: '2rem' }}>
-                                <p>AI suggestions coming soon!</p>
-                            </div>
+                            <AIAssistant resumeData={resumeData} />
                         )}
                     </div>
                 </aside>

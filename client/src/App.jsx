@@ -5,6 +5,7 @@ import StartScratch from './StartScratch';
 import JobMatch from './JobMatch';
 import BrowseSamples from './BrowseSamples';
 import ChooseTemplate from './ChooseTemplate';
+import ResumeList from './ResumeList';
 import './App.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/job-match" element={<JobMatch />} />
         <Route path="/browse-samples" element={<BrowseSamples />} />
         <Route path="/choose-template" element={<ChooseTemplate />} />
+        <Route path="/resumes" element={<ResumeList />} />
       </Routes>
     </Router>
   );

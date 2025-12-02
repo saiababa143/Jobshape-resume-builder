@@ -1,7 +1,8 @@
 import os
 import json
 import re
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Depends
+from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import google.generativeai as genai
@@ -10,8 +11,13 @@ from docx import Document
 import io
 from dotenv import load_dotenv
 from collections import Counter
+from sqlalchemy.orm import Session
+from database import SessionLocal, Resume, init_db
 
 load_dotenv()
+
+# Initialize Database
+init_db()
 
 app = FastAPI()
 
@@ -224,6 +230,14 @@ class LocalATSAnalyzer:
 
 local_analyzer = LocalATSAnalyzer()
 
+# --- Dependency ---
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 # --- Endpoints ---
 
 @app.get("/api/content")
@@ -267,7 +281,7 @@ async def get_content():
     }
 
 @app.post("/api/upload-optimize")
-async def upload_optimize(file: UploadFile = File(...)):
+async def upload_optimize(file: UploadFile = File(...), db: Session = Depends(get_db)):
     try:
         contents = await file.read()
         filename = file.filename.lower()
@@ -285,6 +299,9 @@ async def upload_optimize(file: UploadFile = File(...)):
 
         # Use Gemini if available, else Local
         parsed_data = {}
+        ats_score = 0
+        suggestions = []
+        
         if model:
             prompt = f"""
             You are an expert ATS (Applicant Tracking System) resume analyzer. 
@@ -303,19 +320,45 @@ async def upload_optimize(file: UploadFile = File(...)):
                 clean_response = ai_response.text.replace("```json", "").replace("```", "").strip()
                 analysis_data = json.loads(clean_response)
                 parsed_data = analysis_data.get("parsedData", {})
+                ats_score = analysis_data.get("atsScore", 0)
+                suggestions = analysis_data.get("suggestions", [])
             except Exception as e:
                 print(f"Gemini Error, falling back to local: {e}")
                 analysis_data = local_analyzer.analyze(text)
                 parsed_data = local_analyzer.parse_resume(text)
+                ats_score = analysis_data.get("atsScore", 0)
+                suggestions = analysis_data.get("suggestions", [])
         else:
             analysis_data = local_analyzer.analyze(text)
             parsed_data = local_analyzer.parse_resume(text)
+            ats_score = analysis_data.get("atsScore", 0)
+            suggestions = analysis_data.get("suggestions", [])
+
+        # Save to Database
+        try:
+            db_resume = Resume(
+                filename=file.filename,
+                full_name=parsed_data.get("fullName"),
+                email=parsed_data.get("email"),
+                phone=parsed_data.get("phone"),
+                parsed_data=parsed_data,
+                ats_score=ats_score,
+                suggestions=suggestions,
+                extracted_text=text
+            )
+            db.add(db_resume)
+            db.commit()
+            db.refresh(db_resume)
+            print(f"Saved resume to DB with ID: {db_resume.id}")
+        except Exception as db_e:
+            print(f"Database Error: {db_e}")
+            # Continue even if DB save fails, but log it
 
         return {
             "title": "Upload & Optimize",
             "subtitle": "Analysis Complete. Here is how your resume performs.",
-            "atsScore": analysis_data.get("atsScore", 0),
-            "suggestions": analysis_data.get("suggestions", []),
+            "atsScore": ats_score,
+            "suggestions": suggestions,
             "parsedData": parsed_data
         }
 
@@ -359,6 +402,49 @@ async def job_match(job_description: str = Form(...), resume_text: str = Form(No
         match_data = local_analyzer.match_job(current_resume, job_description)
     
     return match_data
+
+class ContentAnalysisRequest(BaseModel):
+    text: str
+
+@app.post("/api/analyze-content")
+async def analyze_content(request: ContentAnalysisRequest):
+    text = request.text
+    
+    if not text.strip():
+        return {"suggestions": []}
+
+    if model:
+        prompt = f"""
+        You are an expert resume consultant. Analyze the following resume content and provide 3-5 specific, actionable suggestions to improve it.
+        Focus on impact, clarity, and strong action verbs.
+        
+        Resume Content:
+        {text[:5000]}
+        
+        Return a JSON object with a key 'suggestions', which is a list of strings.
+        Example: {{ "suggestions": ["Use 'Orchestrated' instead of 'Led' in the first bullet point.", "Quantify your sales achievement by adding the percentage increase."] }}
+        """
+        try:
+            ai_response = model.generate_content(prompt)
+            clean_response = ai_response.text.replace("```json", "").replace("```", "").strip()
+            data = json.loads(clean_response)
+            return data
+        except Exception as e:
+            print(f"AI Error: {e}")
+            return {"suggestions": ["Could not generate AI suggestions at this time."]}
+    else:
+        # Simple heuristic fallback
+        suggestions = []
+        if len(text.split()) < 100:
+            suggestions.append("Your resume seems a bit short. Try adding more details about your experience.")
+        if "responsible for" in text.lower():
+            suggestions.append("Avoid 'Responsible for'. Use strong action verbs like 'Managed', 'Developed', or 'Executed'.")
+        return {"suggestions": suggestions}
+
+@app.get("/api/resumes")
+async def get_resumes(db: Session = Depends(get_db)):
+    resumes = db.query(Resume).all()
+    return resumes
 
 if __name__ == "__main__":
     import uvicorn
