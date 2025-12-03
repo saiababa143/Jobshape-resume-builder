@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Hexagon } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 function BrowseSamples() {
     const [activeFilter, setActiveFilter] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
     const [visibleCount, setVisibleCount] = useState(8);
+    const [suggestions, setSuggestions] = useState([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const location = useLocation();
 
     const filters = ['All', 'Marketing', 'Engineering', 'Design', 'Student', 'Business', 'Creative'];
 
@@ -26,7 +30,7 @@ function BrowseSamples() {
     ];
 
     const filteredSamples = allSamples.filter(sample => {
-        const matchesFilter = activeFilter === 'All' || sample.category === activeFilter || (activeFilter === 'General' && sample.category === 'Business'); // Simple mapping for demo
+        const matchesFilter = activeFilter === 'All' || sample.category === activeFilter || (activeFilter === 'General' && sample.category === 'Business');
         const matchesSearch = sample.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             sample.category.toLowerCase().includes(searchQuery.toLowerCase());
         return matchesFilter && matchesSearch;
@@ -37,6 +41,52 @@ function BrowseSamples() {
     const handleLoadMore = () => {
         setVisibleCount(prev => prev + 4);
     };
+
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            if (searchQuery.length > 1) {
+                fetchSuggestions(searchQuery);
+            } else {
+                setSuggestions([]);
+                setShowSuggestions(false);
+            }
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchQuery]);
+
+    const fetchSuggestions = async (query) => {
+        setIsLoading(true);
+        try {
+            console.log("Fetching suggestions for:", query);
+            const response = await fetch('http://localhost:8000/api/classify-job-title', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query })
+            });
+            const data = await response.json();
+            console.log("API Response:", data);
+
+            if (data.best_job_title) {
+                const allSuggestions = [data.best_job_title, ...(data.matched_titles || [])];
+                const uniqueSuggestions = [...new Set(allSuggestions)];
+                console.log("Setting suggestions:", uniqueSuggestions);
+                setSuggestions(uniqueSuggestions);
+                setShowSuggestions(true);
+            }
+        } catch (error) {
+            console.error("Error fetching suggestions:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSuggestionClick = (suggestion) => {
+        setSearchQuery(suggestion);
+        setShowSuggestions(false);
+    };
+
+    console.log("Rendering BrowseSamples v3");
 
     return (
         <div className="container">
@@ -56,15 +106,35 @@ function BrowseSamples() {
                 </div>
 
                 <div className="filter-bar">
-                    <div className="search-wrapper">
+                    <div className="search-wrapper" style={{ position: 'relative', zIndex: 1000 }}>
                         <Search size={18} className="search-icon" />
                         <input
                             type="text"
-                            placeholder="Search by role or industry..."
+                            placeholder="Type a job title (e.g. 'react')..."
                             className="search-input"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
+                            onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
+                            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                         />
+                        {isLoading && (
+                            <div className="suggestions-dropdown" style={{ padding: '10px', color: '#666' }}>
+                                Loading suggestions...
+                            </div>
+                        )}
+                        {!isLoading && showSuggestions && suggestions.length > 0 && (
+                            <div className="suggestions-dropdown">
+                                {suggestions.map((s, index) => (
+                                    <div
+                                        key={index}
+                                        className="suggestion-item"
+                                        onClick={() => handleSuggestionClick(s)}
+                                    >
+                                        <span className="suggestion-text">{s}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                     <div className="filter-tags">
                         {filters.map(filter => (
@@ -91,7 +161,8 @@ function BrowseSamples() {
                                         layout: sample.layout,
                                         color: sample.color,
                                         title: sample.title
-                                    }
+                                    },
+                                    resumeData: location.state?.resumeData // Pass through the resume data
                                 }}
                             >
                                 <div className="sample-card">
@@ -167,6 +238,42 @@ function BrowseSamples() {
                     </div>
                 )}
             </div>
+
+            <style>{`
+                .suggestions-dropdown {
+                    position: absolute;
+                    top: 100%;
+                    left: 0;
+                    right: 0;
+                    background: white;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 0 0 8px 8px;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                    z-index: 50;
+                    max-height: 300px;
+                    overflow-y: auto;
+                }
+                .suggestion-item {
+                    padding: 0.75rem 1rem;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    color: #1e293b;
+                    font-size: 0.95rem;
+                    border-bottom: 1px solid #f1f5f9;
+                }
+                .suggestion-item:last-child {
+                    border-bottom: none;
+                }
+                .suggestion-item:hover {
+                    background-color: #f8fafc;
+                    color: #4f46e5;
+                }
+                .suggestion-item strong {
+                    font-weight: 700;
+                    color: #0f172a;
+                }
+            `}</style>
         </div>
     );
 }

@@ -32,6 +32,18 @@ class Resume(Base):
     
     # Raw Text
     extracted_text = Column(Text, nullable=True)
+    
+    # User Link
+    user_id = Column(Integer, nullable=True) # For now nullable to support guest uploads
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), unique=True, index=True, nullable=False)
+    password_hash = Column(String(255), nullable=False)
+    full_name = Column(String(255), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 def init_db():
     Base.metadata.create_all(bind=engine)

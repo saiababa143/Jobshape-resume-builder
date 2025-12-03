@@ -6,3 +6,6 @@ pypdf
 python-docx
 reportlab
 python-dotenv
+sqlalchemy
+pymysql
+passlib[bcrypt]

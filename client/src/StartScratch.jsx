@@ -1,18 +1,26 @@
 import { useState, useEffect, useRef } from 'react';
 import {
     User, Briefcase, GraduationCap, Wrench, Folder, Plus,
-    Download, Share2, Undo, Redo, ChevronDown, Hexagon, Trash2
+    Download, Share2, Undo, Redo, ChevronDown, Hexagon, Trash2, Save
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import html2pdf from 'html2pdf.js';
 import { seniorProductManagerData } from './mockData';
 import AIAssistant from './AIAssistant';
+import AuthModal from './AuthModal';
 
 function StartScratch() {
     const [activeSection, setActiveSection] = useState('contact');
     const [activeTab, setActiveTab] = useState('design');
     const location = useLocation();
     const resumeRef = useRef(null);
+
+    // --- Auth State ---
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState(null);
+    const [pendingAction, setPendingAction] = useState(null); // 'download' or 'save'
+    const [isSaving, setIsSaving] = useState(false);
 
     // --- State for Resume Content ---
     const [resumeData, setResumeData] = useState({
@@ -73,16 +81,22 @@ function StartScratch() {
     useEffect(() => {
         if (location.state && location.state.resumeData) {
             const parsed = location.state.resumeData;
-            setResumeData(prev => ({
-                ...prev,
-                fullName: parsed.fullName || prev.fullName,
-                email: parsed.email || prev.email,
-                phone: parsed.phone || prev.phone,
-                summary: parsed.summary || prev.summary,
-                experience: parsed.experience && parsed.experience.length > 0 ? parsed.experience.map((e, i) => ({ ...e, id: i })) : prev.experience,
-                education: parsed.education && parsed.education.length > 0 ? parsed.education.map((e, i) => ({ ...e, id: i })) : prev.education
-            }));
+            // Strictly use parsed data, falling back to empty strings if fields are missing
+            // This ensures no "John Doe" mock data leaks in if the user uploaded a file
+            setResumeData({
+                fullName: parsed.fullName || "",
+                email: parsed.email || "",
+                phone: parsed.phone || "",
+                location: parsed.location || "",
+                linkedin: parsed.linkedin || "",
+                summary: parsed.summary || "",
+                experience: parsed.experience && parsed.experience.length > 0 ? parsed.experience.map((e, i) => ({ ...e, id: i })) : [],
+                education: parsed.education && parsed.education.length > 0 ? parsed.education.map((e, i) => ({ ...e, id: i })) : [],
+                skills: parsed.skills || [],
+                projects: parsed.projects || []
+            });
         }
+
 
         // Apply recommended template if coming from Browse Samples
         if (location.state && location.state.recommendedTemplate) {
@@ -158,7 +172,69 @@ function StartScratch() {
         setResumeData(prev => ({ ...prev, skills: prev.skills.filter((_, i) => i !== index) }));
     };
 
-    const handleDownload = () => {
+    const handleDownloadClick = () => {
+        if (!isLoggedIn) {
+            setPendingAction('download');
+            setIsAuthModalOpen(true);
+        } else {
+            performDownload();
+        }
+    };
+
+    const handleSaveClick = () => {
+        if (!isLoggedIn) {
+            setPendingAction('save');
+            setIsAuthModalOpen(true);
+        } else {
+            performSave();
+        }
+    };
+
+    const handleLoginSuccess = (userData) => {
+        setIsLoggedIn(true);
+        setUser(userData);
+        setIsAuthModalOpen(false); // Close modal explicitly
+
+        // Execute pending action
+        setTimeout(() => {
+            if (pendingAction === 'download') {
+                performDownload();
+            } else if (pendingAction === 'save') {
+                performSave();
+            }
+            setPendingAction(null);
+        }, 500);
+    };
+
+    const performSave = async () => {
+        setIsSaving(true);
+        try {
+            const response = await fetch('http://localhost:8000/api/resumes/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: user.id,
+                    ...resumeData
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Failed to save');
+            }
+
+            alert('Resume saved successfully!');
+        } catch (error) {
+            console.error("Save error:", error);
+            alert(`Failed to save resume: ${error.message}`);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const performDownload = () => {
         const element = resumeRef.current;
         const opt = {
             margin: 0,
@@ -260,9 +336,9 @@ function StartScratch() {
     };
 
     return (
-        <div className="builder-container">
+        <div className="builder-container" >
             {/* Header */}
-            <header className="builder-header">
+            < header className="builder-header" >
                 <div className="header-left">
                     <Link to="/" className="logo-link">
                         <Hexagon className="logo-icon" fill="currentColor" size={24} />
@@ -273,7 +349,15 @@ function StartScratch() {
                     <span className="save-status">Auto-saving...</span>
                 </div>
                 <div className="header-right">
-                    <button className="download-btn" onClick={handleDownload}>
+                    {isLoggedIn && (
+                        <div className="user-greeting" style={{ marginRight: '1rem', fontSize: '0.9rem', color: '#475569' }}>
+                            Hi, {user.full_name}
+                        </div>
+                    )}
+                    <button className="download-btn" onClick={handleSaveClick} style={{ marginRight: '0.5rem', backgroundColor: '#10b981' }} disabled={isSaving}>
+                        <Save size={16} style={{ marginRight: '0.5rem' }} /> {isSaving ? 'Saving...' : 'Save'}
+                    </button>
+                    <button className="download-btn" onClick={handleDownloadClick}>
                         <Download size={16} style={{ marginRight: '0.5rem' }} /> Download PDF
                     </button>
                     <button className="icon-btn" onClick={() => setResumeData(seniorProductManagerData)} title="Load Mock Data">
@@ -281,7 +365,7 @@ function StartScratch() {
                     </button>
                     <button className="icon-btn"><Share2 size={18} /></button>
                 </div>
-            </header>
+            </header >
 
             <div className="builder-body">
                 {/* Left Sidebar (Editor) */}
@@ -429,10 +513,27 @@ function StartScratch() {
                                                     onChange={(e) => setDesignConfig({ ...designConfig, font: e.target.value })}
                                                     style={{ width: '100%', border: 'none', background: 'transparent' }}
                                                 >
-                                                    <option value="Inter">Inter</option>
-                                                    <option value="Arial">Arial</option>
-                                                    <option value="Georgia">Georgia</option>
-                                                    <option value="Courier New">Courier</option>
+                                                    {[
+                                                        "Agency FB", "Albert Sans", "Arial", "Arial Black", "Avant Garde", "Avenir",
+                                                        "Baskerville", "Bodoni MT", "Book Antiqua", "Bookman Old Style", "Brush Script MT",
+                                                        "Calibri", "Cambria", "Candara", "Century Gothic", "Comic Sans MS", "Consolas", "Copperplate", "Courier New",
+                                                        "Didot", "Droid Sans",
+                                                        "Franklin Gothic Medium", "Futura",
+                                                        "Garamond", "Geneva", "Georgia", "Gill Sans", "Goudy Old Style",
+                                                        "Helvetica",
+                                                        "Impact", "Inter",
+                                                        "Lato", "Lucida Bright", "Lucida Console", "Lucida Sans Typewriter",
+                                                        "Merriweather", "Monaco", "Montserrat",
+                                                        "Noto Sans",
+                                                        "Open Sans", "Optima", "Oswald",
+                                                        "Palatino", "Papyrus", "Perpetua", "Playfair Display", "Poppins",
+                                                        "Raleway", "Roboto", "Rockwell",
+                                                        "Segoe UI",
+                                                        "Tahoma", "Times New Roman", "Trebuchet MS",
+                                                        "Verdana"
+                                                    ].map(font => (
+                                                        <option key={font} value={font}>{font}</option>
+                                                    ))}
                                                 </select>
                                             </div>
                                         </div>
@@ -462,7 +563,12 @@ function StartScratch() {
                     </div>
                 </aside>
             </div>
-        </div>
+            <AuthModal
+                isOpen={isAuthModalOpen}
+                onClose={() => setIsAuthModalOpen(false)}
+                onLoginSuccess={handleLoginSuccess}
+            />
+        </div >
     );
 }
 

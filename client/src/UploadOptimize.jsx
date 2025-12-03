@@ -41,9 +41,9 @@ function UploadOptimize() {
 
     const handleOptimizeClick = () => {
         if (data && data.parsedData) {
-            navigate('/start-scratch', { state: { resumeData: data.parsedData } });
+            navigate('/browse-samples', { state: { resumeData: data.parsedData } });
         } else {
-            navigate('/start-scratch');
+            navigate('/browse-samples');
         }
     };
 

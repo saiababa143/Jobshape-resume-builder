@@ -12,7 +12,8 @@ import io
 from dotenv import load_dotenv
 from collections import Counter
 from sqlalchemy.orm import Session
-from database import SessionLocal, Resume, init_db
+from database import SessionLocal, Resume, User, init_db
+from passlib.context import CryptContext
 
 load_dotenv()
 
@@ -38,6 +39,46 @@ if GOOGLE_API_KEY:
 else:
     print("Warning: GOOGLE_API_KEY not found. Using Local Heuristic Mode.")
     model = None
+
+# --- Auth Configuration ---
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+class UserCreate(BaseModel):
+    email: str
+    password: str
+    full_name: str
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+class UserResponse(BaseModel):
+    id: int
+    email: str
+    full_name: str
+
+    class Config:
+        orm_mode = True
+
+class ResumeSave(BaseModel):
+    user_id: int
+    fullName: str
+    email: str
+    phone: str
+    location: str = ""
+    linkedin: str = ""
+    summary: str
+    experience: list
+    education: list
+    skills: list
+    projects: list = []
+    # Optional: store design config too if needed, but for now just content
 
 # --- Helper Functions ---
 def extract_text_from_pdf(file_bytes):
@@ -192,9 +233,13 @@ class LocalATSAnalyzer:
             "fullName": "Your Name",
             "email": "",
             "phone": "",
+            "location": "",
+            "linkedin": "",
             "summary": "",
             "experience": [],
-            "education": []
+            "education": [],
+            "skills": [],
+            "projects": []
         }
         
         lines = [l.strip() for l in text.split('\n') if l.strip()]
@@ -210,22 +255,65 @@ class LocalATSAnalyzer:
         phone_match = re.search(r'\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}', text)
         if phone_match:
             data["phone"] = phone_match.group(0)
-
-        # Extract Summary (heuristic: text between "Summary" and next section)
-        lower_text = text.lower()
-        try:
-            summary_start = lower_text.find("summary")
-            if summary_start != -1:
-                # Find next section
-                next_indices = [lower_text.find(sec) for sec in self.essential_sections if sec != "summary" and lower_text.find(sec) > summary_start]
-                summary_end = min([i for i in next_indices if i != -1]) if next_indices else len(text)
-                # Extract text, skipping the word "Summary"
-                raw_summary = text[summary_start:summary_end]
-                # Clean up "Summary" label
-                data["summary"] = re.sub(r'^summary[:\s-]*', '', raw_summary, flags=re.IGNORECASE).strip()
-        except:
-            pass
             
+        # Extract LinkedIn
+        linkedin_match = re.search(r'linkedin\.com/in/[a-zA-Z0-9-]+', text)
+        if linkedin_match:
+            data["linkedin"] = linkedin_match.group(0)
+
+        # Helper to find section content
+        lower_text = text.lower()
+        def get_section_content(section_name, next_sections):
+            start_idx = lower_text.find(section_name)
+            if start_idx == -1: return ""
+            
+            content_start = start_idx + len(section_name)
+            content_end = len(text)
+            
+            for next_sec in next_sections:
+                idx = lower_text.find(next_sec, content_start)
+                if idx != -1 and idx < content_end:
+                    content_end = idx
+            
+            return text[content_start:content_end].strip()
+
+        # Extract Summary
+        data["summary"] = get_section_content("summary", ["experience", "education", "skills", "projects"])
+        if not data["summary"]:
+             # Fallback: take text after contact info until next section
+             pass 
+
+        # Extract Skills
+        skills_text = get_section_content("skills", ["experience", "education", "projects", "summary"])
+        if skills_text:
+            # Split by common delimiters
+            data["skills"] = [s.strip() for s in re.split(r'[,•\n]', skills_text) if s.strip() and len(s.strip()) > 2]
+
+        # Extract Experience (Very basic)
+        exp_text = get_section_content("experience", ["education", "skills", "projects", "summary"])
+        if exp_text:
+            # Create a single dummy entry with the raw text if we can't parse structure
+            # In a real local parser, we'd need complex logic to identify dates/companies
+            data["experience"] = [{
+                "id": 1,
+                "title": "Experience Details",
+                "company": "See Description",
+                "date": "",
+                "location": "",
+                "description": exp_text[:500] # Limit length
+            }]
+
+        # Extract Education (Very basic)
+        edu_text = get_section_content("education", ["experience", "skills", "projects", "summary"])
+        if edu_text:
+             data["education"] = [{
+                "id": 1,
+                "degree": "Education Details",
+                "school": "See Details",
+                "date": "",
+                "location": ""
+            }]
+
         return data
 
 local_analyzer = LocalATSAnalyzer()
@@ -239,6 +327,32 @@ def get_db():
         db.close()
 
 # --- Endpoints ---
+
+@app.post("/api/auth/signup", response_model=UserResponse)
+def signup(user: UserCreate, db: Session = Depends(get_db)):
+    try:
+        db_user = db.query(User).filter(User.email == user.email).first()
+        if db_user:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        
+        hashed_password = get_password_hash(user.password)
+        new_user = User(email=user.email, password_hash=hashed_password, full_name=user.full_name)
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        return new_user
+    except Exception as e:
+        print(f"Signup Error: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Signup failed: {str(e)}")
+
+@app.post("/api/auth/login", response_model=UserResponse)
+def login(user: UserLogin, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.email == user.email).first()
+    if not db_user or not verify_password(user.password, db_user.password_hash):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    return db_user
 
 @app.get("/api/content")
 async def get_content():
@@ -308,7 +422,17 @@ async def upload_optimize(file: UploadFile = File(...), db: Session = Depends(ge
             Analyze the following resume text and provide a JSON response with:
             1. 'atsScore': a number between 0 and 100.
             2. 'suggestions': a list of objects, each with 'id' (int), 'type' ('success', 'warning', 'error'), 'title' (string), and 'description' (string).
-            3. 'parsedData': object containing 'fullName', 'email', 'phone', 'summary' (string), 'experience' (list of objects with title, company, date, description), 'education' (list of objects).
+            3. 'parsedData': object containing:
+               - 'fullName' (string)
+               - 'email' (string)
+               - 'phone' (string)
+               - 'location' (string)
+               - 'linkedin' (string)
+               - 'summary' (string)
+               - 'skills' (list of strings)
+               - 'experience' (list of objects with title, company, date, location, description)
+               - 'education' (list of objects with degree, school, date, location)
+               - 'projects' (list of objects with title, description, link)
 
             Resume Text:
             {text[:10000]} 
@@ -441,10 +565,98 @@ async def analyze_content(request: ContentAnalysisRequest):
             suggestions.append("Avoid 'Responsible for'. Use strong action verbs like 'Managed', 'Developed', or 'Executed'.")
         return {"suggestions": suggestions}
 
+class JobTitleQuery(BaseModel):
+    query: str
+
+@app.post("/api/classify-job-title")
+async def classify_job_title(request: JobTitleQuery):
+    query = request.query
+    if not query:
+        return {}
+    
+    if model:
+        prompt = f"""
+        You are a professional Job Title Normalization and Prediction Engine for a resume builder.
+
+        Your responsibility:
+        - Convert partial, shorthand, or informal job input into REAL, INDUSTRY-VALID_JOB_TITLES.
+        - NEVER invent fake job titles.
+        - NEVER create roles by blindly appending suffixes.
+        - ONLY return job titles that exist in real-world hiring markets.
+
+        You must support:
+        - IT roles
+        - Non-IT roles
+        - Intern, Fresher, Junior, Senior roles
+
+        Return ONLY valid JSON with this structure:
+        {{
+          "matched_titles": [],
+          "best_job_title": "",
+          "job_category": "",
+          "confidence_score": 0.0
+        }}
+
+        Do NOT return explanations.
+        
+        Input: "{query}"
+        """
+        try:
+            ai_response = model.generate_content(prompt)
+            clean_response = ai_response.text.replace("```json", "").replace("```", "").strip()
+            data = json.loads(clean_response)
+            return data
+        except Exception as e:
+            print(f"AI Error: {e}")
+            return {"error": str(e)}
+    else:
+        # Fallback for local testing if no API key
+        return {
+            "matched_titles": [f"{query} Specialist", f"{query} Manager"],
+            "best_job_title": query,
+            "job_category": "General",
+            "confidence_score": 0.5
+        }
+
 @app.get("/api/resumes")
 async def get_resumes(db: Session = Depends(get_db)):
     resumes = db.query(Resume).all()
     return resumes
+
+@app.post("/api/resumes/save")
+async def save_resume(resume_data: ResumeSave, db: Session = Depends(get_db)):
+    print(f"Received save request for user_id: {resume_data.user_id}")
+    print(f"Data: {resume_data.dict()}")
+    try:
+        # Check if user exists
+        user = db.query(User).filter(User.id == resume_data.user_id).first()
+        if not user:
+            print(f"User {resume_data.user_id} not found in DB")
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Create new resume entry
+        new_resume = Resume(
+            user_id=resume_data.user_id,
+            full_name=resume_data.fullName,
+            email=resume_data.email,
+            phone=resume_data.phone,
+            parsed_data=resume_data.dict(), # Store the whole blob
+            ats_score=0, # Recalculate if needed, or pass from frontend
+            suggestions=[],
+            extracted_text="" # No raw text for manually created/edited resumes
+        )
+        
+        db.add(new_resume)
+        db.commit()
+        db.refresh(new_resume)
+        print(f"Successfully saved resume ID: {new_resume.id}")
+        
+        return {"message": "Resume saved successfully", "id": new_resume.id}
+    except Exception as e:
+        print(f"Save Error: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
