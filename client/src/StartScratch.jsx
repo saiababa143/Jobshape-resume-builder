@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import {
-    User, Briefcase, GraduationCap, Wrench, Folder, Plus,
-    Download, Share2, Undo, Redo, ChevronDown, Hexagon, Trash2, Save
+    User, Briefcase, GraduationCap, Wrench, Folder, Plus, FileText,
+    Download, Share2, Undo, Redo, ChevronDown, Hexagon, Trash2, Save, Eye
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import html2pdf from 'html2pdf.js';
@@ -248,86 +248,137 @@ function StartScratch() {
 
     // --- Render Helpers ---
 
-    const renderLeftSidebarContent = () => {
+    const renderEditorContent = () => {
         switch (activeSection) {
             case 'contact':
                 return (
-                    <div className="form-section">
-                        <h3>Contact Information</h3>
+                    <div className="editor-form-container">
+                        <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#0f172a' }}>Let's start with your header</h2>
+                        <p style={{ color: '#64748b', marginBottom: '2rem' }}>Include your full name and multiple ways for employers to reach you.</p>
+
                         <div className="form-group">
                             <label>Full Name</label>
-                            <input type="text" value={resumeData.fullName} onChange={(e) => handleInputChange('fullName', e.target.value)} />
+                            <input type="text" value={resumeData.fullName} onChange={(e) => handleInputChange('fullName', e.target.value)} className="form-input" />
                         </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            <div className="form-group">
+                                <label>Email</label>
+                                <input type="email" value={resumeData.email} onChange={(e) => handleInputChange('email', e.target.value)} className="form-input" />
+                            </div>
+                            <div className="form-group">
+                                <label>Phone</label>
+                                <input type="text" value={resumeData.phone} onChange={(e) => handleInputChange('phone', e.target.value)} className="form-input" />
+                            </div>
+                        </div>
+
                         <div className="form-group">
-                            <label>Email</label>
-                            <input type="email" value={resumeData.email} onChange={(e) => handleInputChange('email', e.target.value)} />
+                            <label>Location (City, Country)</label>
+                            <input type="text" value={resumeData.location} onChange={(e) => handleInputChange('location', e.target.value)} className="form-input" />
                         </div>
-                        <div className="form-group">
-                            <label>Phone</label>
-                            <input type="text" value={resumeData.phone} onChange={(e) => handleInputChange('phone', e.target.value)} />
-                        </div>
-                        <div className="form-group">
-                            <label>Location</label>
-                            <input type="text" value={resumeData.location} onChange={(e) => handleInputChange('location', e.target.value)} />
-                        </div>
+
                         <div className="form-group">
                             <label>LinkedIn / Website</label>
-                            <input type="text" value={resumeData.linkedin} onChange={(e) => handleInputChange('linkedin', e.target.value)} />
+                            <input type="text" value={resumeData.linkedin} onChange={(e) => handleInputChange('linkedin', e.target.value)} className="form-input" />
                         </div>
+                    </div>
+                );
+            case 'summary':
+                return (
+                    <div className="editor-form-container">
+                        <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#0f172a' }}>Professional Summary</h2>
+                        <p style={{ color: '#64748b', marginBottom: '2rem' }}>Write a short summary of your experience and skills.</p>
                         <div className="form-group">
-                            <label>Professional Summary</label>
-                            <textarea rows={5} value={resumeData.summary} onChange={(e) => handleInputChange('summary', e.target.value)} />
+                            <textarea
+                                rows={8}
+                                value={resumeData.summary}
+                                onChange={(e) => handleInputChange('summary', e.target.value)}
+                                className="form-input"
+                                placeholder="e.g. A highly motivated..."
+                            />
                         </div>
                     </div>
                 );
             case 'experience':
                 return (
-                    <div className="form-section">
-                        <h3>Work Experience</h3>
+                    <div className="editor-form-container">
+                        <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#0f172a' }}>Work Experience</h2>
+                        <p style={{ color: '#64748b', marginBottom: '2rem' }}>Add your previous job positions.</p>
                         {resumeData.experience.map(exp => (
-                            <div key={exp.id} className="form-card">
-                                <div className="form-card-header">
-                                    <input type="text" className="title-input" value={exp.title} onChange={(e) => handleExperienceChange(exp.id, 'title', e.target.value)} placeholder="Job Title" />
-                                    <button onClick={() => removeExperience(exp.id)} className="delete-btn"><Trash2 size={16} /></button>
+                            <div key={exp.id} className="form-card" style={{ marginBottom: '1.5rem', padding: '1.5rem', border: '1px solid #e2e8f0', borderRadius: '0.5rem' }}>
+                                <div className="form-card-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                                    <h4 style={{ margin: 0 }}>{exp.title || 'New Position'}</h4>
+                                    <button onClick={() => removeExperience(exp.id)} className="delete-btn" style={{ color: '#ef4444' }}><Trash2 size={16} /></button>
                                 </div>
-                                <input type="text" value={exp.company} onChange={(e) => handleExperienceChange(exp.id, 'company', e.target.value)} placeholder="Company" />
-                                <input type="text" value={exp.date} onChange={(e) => handleExperienceChange(exp.id, 'date', e.target.value)} placeholder="Date Range" />
-                                <textarea rows={3} value={exp.description} onChange={(e) => handleExperienceChange(exp.id, 'description', e.target.value)} placeholder="Description" />
+                                <div className="form-group">
+                                    <label>Job Title</label>
+                                    <input type="text" value={exp.title} onChange={(e) => handleExperienceChange(exp.id, 'title', e.target.value)} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Company</label>
+                                    <input type="text" value={exp.company} onChange={(e) => handleExperienceChange(exp.id, 'company', e.target.value)} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Date Range</label>
+                                    <input type="text" value={exp.date} onChange={(e) => handleExperienceChange(exp.id, 'date', e.target.value)} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Description</label>
+                                    <textarea rows={4} value={exp.description} onChange={(e) => handleExperienceChange(exp.id, 'description', e.target.value)} />
+                                </div>
                             </div>
                         ))}
-                        <button className="add-btn" onClick={addExperience}><Plus size={16} /> Add Position</button>
+                        <button className="add-btn" onClick={addExperience} style={{ width: '100%', padding: '0.75rem', border: '1px dashed #cbd5e1', borderRadius: '0.5rem', color: '#6366f1', background: 'white', cursor: 'pointer' }}>
+                            <Plus size={16} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} /> Add Position
+                        </button>
                     </div>
                 );
             case 'education':
                 return (
-                    <div className="form-section">
-                        <h3>Education</h3>
+                    <div className="editor-form-container">
+                        <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#0f172a' }}>Education</h2>
+                        <p style={{ color: '#64748b', marginBottom: '2rem' }}>Add your educational background.</p>
                         {resumeData.education.map(edu => (
-                            <div key={edu.id} className="form-card">
-                                <div className="form-card-header">
-                                    <input type="text" className="title-input" value={edu.degree} onChange={(e) => handleEducationChange(edu.id, 'degree', e.target.value)} placeholder="Degree" />
-                                    <button onClick={() => removeEducation(edu.id)} className="delete-btn"><Trash2 size={16} /></button>
+                            <div key={edu.id} className="form-card" style={{ marginBottom: '1.5rem', padding: '1.5rem', border: '1px solid #e2e8f0', borderRadius: '0.5rem' }}>
+                                <div className="form-card-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                                    <h4 style={{ margin: 0 }}>{edu.degree || 'New Education'}</h4>
+                                    <button onClick={() => removeEducation(edu.id)} className="delete-btn" style={{ color: '#ef4444' }}><Trash2 size={16} /></button>
                                 </div>
-                                <input type="text" value={edu.school} onChange={(e) => handleEducationChange(edu.id, 'school', e.target.value)} placeholder="School" />
-                                <input type="text" value={edu.date} onChange={(e) => handleEducationChange(edu.id, 'date', e.target.value)} placeholder="Graduation Date" />
+                                <div className="form-group">
+                                    <label>Degree</label>
+                                    <input type="text" value={edu.degree} onChange={(e) => handleEducationChange(edu.id, 'degree', e.target.value)} />
+                                </div>
+                                <div className="form-group">
+                                    <label>School</label>
+                                    <input type="text" value={edu.school} onChange={(e) => handleEducationChange(edu.id, 'school', e.target.value)} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Graduation Date</label>
+                                    <input type="text" value={edu.date} onChange={(e) => handleEducationChange(edu.id, 'date', e.target.value)} />
+                                </div>
                             </div>
                         ))}
-                        <button className="add-btn" onClick={addEducation}><Plus size={16} /> Add Education</button>
+                        <button className="add-btn" onClick={addEducation} style={{ width: '100%', padding: '0.75rem', border: '1px dashed #cbd5e1', borderRadius: '0.5rem', color: '#6366f1', background: 'white', cursor: 'pointer' }}>
+                            <Plus size={16} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} /> Add Education
+                        </button>
                     </div>
                 );
             case 'skills':
                 return (
-                    <div className="form-section">
-                        <h3>Skills</h3>
-                        <div className="skills-input-list">
+                    <div className="editor-form-container">
+                        <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#0f172a' }}>Skills</h2>
+                        <p style={{ color: '#64748b', marginBottom: '2rem' }}>List your technical and soft skills.</p>
+                        <div className="skills-input-list" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
                             {resumeData.skills.map((skill, index) => (
-                                <div key={index} className="skill-input-row">
-                                    <input type="text" value={skill} onChange={(e) => handleSkillChange(index, e.target.value)} />
-                                    <button onClick={() => removeSkill(index)} className="delete-btn"><Trash2 size={14} /></button>
+                                <div key={index} className="skill-input-row" style={{ display: 'flex', gap: '0.5rem' }}>
+                                    <input type="text" value={skill} onChange={(e) => handleSkillChange(index, e.target.value)} style={{ flex: 1 }} />
+                                    <button onClick={() => removeSkill(index)} className="delete-btn" style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer' }}><Trash2 size={16} /></button>
                                 </div>
                             ))}
                         </div>
-                        <button className="add-btn" onClick={addSkill}><Plus size={16} /> Add Skill</button>
+                        <button className="add-btn" onClick={addSkill} style={{ width: '100%', padding: '0.75rem', border: '1px dashed #cbd5e1', borderRadius: '0.5rem', color: '#6366f1', background: 'white', cursor: 'pointer' }}>
+                            <Plus size={16} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} /> Add Skill
+                        </button>
                     </div>
                 );
             default:
@@ -357,6 +408,9 @@ function StartScratch() {
                     <button className="download-btn" onClick={handleSaveClick} style={{ marginRight: '0.5rem', backgroundColor: '#10b981' }} disabled={isSaving}>
                         <Save size={16} style={{ marginRight: '0.5rem' }} /> {isSaving ? 'Saving...' : 'Save'}
                     </button>
+                    <button className="download-btn" onClick={() => window.print()} style={{ marginRight: '0.5rem', backgroundColor: '#3b82f6' }}>
+                        <Eye size={16} style={{ marginRight: '0.5rem' }} /> Preview
+                    </button>
                     <button className="download-btn" onClick={handleDownloadClick}>
                         <Download size={16} style={{ marginRight: '0.5rem' }} /> Download PDF
                     </button>
@@ -368,7 +422,7 @@ function StartScratch() {
             </header >
 
             <div className="builder-body">
-                {/* Left Sidebar (Editor) */}
+                {/* Left Sidebar (Navigation & Design) */}
                 <aside className="left-sidebar">
                     <div className="user-profile-summary">
                         <div className="user-avatar" style={{ backgroundColor: designConfig.color }}>
@@ -382,10 +436,10 @@ function StartScratch() {
 
                     <nav className="builder-nav">
                         <button className={`nav-item ${activeSection === 'contact' ? 'active' : ''}`} onClick={() => setActiveSection('contact')}>
-                            <User size={18} /> Contact & Summary
+                            <User size={18} /> Contact
                         </button>
                         <button className={`nav-item ${activeSection === 'experience' ? 'active' : ''}`} onClick={() => setActiveSection('experience')}>
-                            <Briefcase size={18} /> Experience
+                            <Briefcase size={18} /> Work Experience
                         </button>
                         <button className={`nav-item ${activeSection === 'education' ? 'active' : ''}`} onClick={() => setActiveSection('education')}>
                             <GraduationCap size={18} /> Education
@@ -393,15 +447,66 @@ function StartScratch() {
                         <button className={`nav-item ${activeSection === 'skills' ? 'active' : ''}`} onClick={() => setActiveSection('skills')}>
                             <Wrench size={18} /> Skills
                         </button>
+                        <button className={`nav-item ${activeSection === 'summary' ? 'active' : ''}`} onClick={() => setActiveSection('summary')}>
+                            <FileText size={18} /> Summary
+                        </button>
                     </nav>
 
-                    <div className="editor-content">
-                        {renderLeftSidebarContent()}
+                    <div className="sidebar-divider" style={{ height: '1px', backgroundColor: '#e2e8f0', margin: '1.5rem 0' }}></div>
+
+                    {/* Design Controls */}
+                    <div className="design-controls">
+                        <div className="control-group">
+                            <div className="sidebar-section-title">Color Palette</div>
+                            <div className="color-palette">
+                                {['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#1f2937'].map(color => (
+                                    <button
+                                        key={color}
+                                        className={`color-circle ${designConfig.color === color ? 'selected' : ''}`}
+                                        style={{ backgroundColor: color }}
+                                        onClick={() => setDesignConfig({ ...designConfig, color })}
+                                    ></button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="control-group">
+                            <div className="sidebar-section-title">Font Style</div>
+                            <select
+                                className="font-select"
+                                value={designConfig.font}
+                                onChange={(e) => setDesignConfig({ ...designConfig, font: e.target.value })}
+                            >
+                                {[
+                                    "Inter", "Roboto", "Open Sans", "Lato", "Montserrat", "Raleway", "Poppins", "Merriweather", "Playfair Display"
+                                ].map(font => (
+                                    <option key={font} value={font}>{font}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className="control-group">
+                            <div className="sidebar-section-title">Spacing</div>
+                            <input
+                                type="range"
+                                min="1"
+                                max="2"
+                                step="0.1"
+                                value={designConfig.spacing}
+                                onChange={(e) => setDesignConfig({ ...designConfig, spacing: e.target.value })}
+                                className="spacing-slider"
+                            />
+                        </div>
                     </div>
                 </aside>
 
-                {/* Main Preview Area */}
-                <main className="resume-preview-area">
+                {/* Middle Editor Area */}
+                <main className="middle-editor">
+                    {renderEditorContent()}
+                </main>
+
+                {/* Right Preview Area */}
+                <aside className="right-preview">
                     <div
                         className={`resume-paper ${designConfig.template}`}
                         ref={resumeRef}
@@ -410,7 +515,9 @@ function StartScratch() {
                             lineHeight: designConfig.spacing,
                             fontSize: `${designConfig.fontSize}px`,
                             color: '#1e293b',
-                            '--template-color': designConfig.color
+                            '--template-color': designConfig.color,
+                            transform: 'scale(0.85)',
+                            transformOrigin: 'top center'
                         }}
                     >
                         {/* Resume Header */}
@@ -476,90 +583,6 @@ function StartScratch() {
                                 ))}
                             </div>
                         </div>
-                    </div>
-                </main>
-
-                {/* Right Sidebar (Design) */}
-                <aside className="right-sidebar">
-                    <div className="sidebar-tabs">
-                        <button className={`tab-btn ${activeTab === 'design' ? 'active' : ''}`} onClick={() => setActiveTab('design')}>Design</button>
-                        <button className={`tab-btn ${activeTab === 'ai' ? 'active' : ''}`} onClick={() => setActiveTab('ai')}>AI Assistant</button>
-                    </div>
-
-                    <div className="sidebar-content">
-                        {activeTab === 'design' && (
-                            <>
-                                <div className="control-group">
-                                    <label>Color Palette</label>
-                                    <div className="color-options">
-                                        {['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#ef4444', '#1f2937'].map(color => (
-                                            <button
-                                                key={color}
-                                                className={`color-btn ${designConfig.color === color ? 'selected' : ''}`}
-                                                style={{ backgroundColor: color }}
-                                                onClick={() => setDesignConfig({ ...designConfig, color })}
-                                            ></button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="control-group">
-                                    <label>Font Style</label>
-                                    <div className="font-inputs">
-                                        <div className="input-wrapper">
-                                            <div className="custom-select">
-                                                <select
-                                                    value={designConfig.font}
-                                                    onChange={(e) => setDesignConfig({ ...designConfig, font: e.target.value })}
-                                                    style={{ width: '100%', border: 'none', background: 'transparent' }}
-                                                >
-                                                    {[
-                                                        "Agency FB", "Albert Sans", "Arial", "Arial Black", "Avant Garde", "Avenir",
-                                                        "Baskerville", "Bodoni MT", "Book Antiqua", "Bookman Old Style", "Brush Script MT",
-                                                        "Calibri", "Cambria", "Candara", "Century Gothic", "Comic Sans MS", "Consolas", "Copperplate", "Courier New",
-                                                        "Didot", "Droid Sans",
-                                                        "Franklin Gothic Medium", "Futura",
-                                                        "Garamond", "Geneva", "Georgia", "Gill Sans", "Goudy Old Style",
-                                                        "Helvetica",
-                                                        "Impact", "Inter",
-                                                        "Lato", "Lucida Bright", "Lucida Console", "Lucida Sans Typewriter",
-                                                        "Merriweather", "Monaco", "Montserrat",
-                                                        "Noto Sans",
-                                                        "Open Sans", "Optima", "Oswald",
-                                                        "Palatino", "Papyrus", "Perpetua", "Playfair Display", "Poppins",
-                                                        "Raleway", "Roboto", "Rockwell",
-                                                        "Segoe UI",
-                                                        "Tahoma", "Times New Roman", "Trebuchet MS",
-                                                        "Verdana"
-                                                    ].map(font => (
-                                                        <option key={font} value={font}>{font}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="control-group">
-                                    <label>Spacing</label>
-                                    <div className="spacing-control">
-                                        <input
-                                            type="range"
-                                            min="1"
-                                            max="2"
-                                            step="0.1"
-                                            value={designConfig.spacing}
-                                            onChange={(e) => setDesignConfig({ ...designConfig, spacing: e.target.value })}
-                                            style={{ width: '100%' }}
-                                        />
-                                    </div>
-                                </div>
-                            </>
-                        )}
-
-                        {activeTab === 'ai' && (
-                            <AIAssistant resumeData={resumeData} />
-                        )}
                     </div>
                 </aside>
             </div>
