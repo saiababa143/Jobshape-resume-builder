@@ -59,20 +59,17 @@ function BrowseSamples() {
         setIsLoading(true);
         try {
             console.log("Fetching suggestions for:", query);
-            const response = await fetch('http://localhost:8000/api/classify-job-title', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query })
-            });
-            const data = await response.json();
-            console.log("API Response:", data);
-
-            if (data.best_job_title) {
-                const allSuggestions = [data.best_job_title, ...(data.matched_titles || [])];
-                const uniqueSuggestions = [...new Set(allSuggestions)];
-                console.log("Setting suggestions:", uniqueSuggestions);
-                setSuggestions(uniqueSuggestions);
+            console.log("Fetching suggestions for:", query);
+            // Use the new database-backed endpoint
+            const response = await fetch(`http://localhost:8000/api/job-titles?query=${encodeURIComponent(query)}`);
+            if (response.ok) {
+                const data = await response.json();
+                console.log("API Response:", data);
+                // The new API returns a simple list of strings
+                setSuggestions(data);
                 setShowSuggestions(true);
+            } else {
+                console.error("API Error:", response.status);
             }
         } catch (error) {
             console.error("Error fetching suggestions:", error);

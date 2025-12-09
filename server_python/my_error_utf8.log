@@ -1,0 +1,608 @@
+﻿python : Traceback 
+(most recent call 
+last):
+At line:1 char:1
++ python main.py 
+2>&1 | Out-File 
+-Encoding utf8 
+my_error_utf8.log
++ ~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (Traceba   
+ ck (most recent     
+call last)::Stri    
+ng) [], RemoteEx    
+ception
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\engine\base
+.py", line 143, in 
+__init__
+    self._dbapi_conne
+ction = engine.raw_co
+nnection()
+                     
+        ~~~~~~~~~~~~~
+~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\engine\base
+.py", line 3301, in 
+raw_connection
+    return 
+self.pool.connect()
+           
+~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\base.p
+y", line 447, in 
+connect
+    return _Connectio
+nFairy._checkout(self
+)
+           ~~~~~~~~~~
+~~~~~~~~~~~~~~~~^^^^^
+^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\base.p
+y", line 1264, in 
+_checkout
+    fairy = _Connecti
+onRecord.checkout(poo
+l)
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\base.p
+y", line 711, in 
+checkout
+    rec = 
+pool._do_get()
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\impl.p
+y", line 177, in 
+_do_get
+    with 
+util.safe_reraise():
+         
+~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\util\langhe
+lpers.py", line 224, 
+in __exit__
+    raise exc_value.w
+ith_traceback(exc_tb)
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\impl.p
+y", line 175, in 
+_do_get
+    return self._crea
+te_connection()
+           ~~~~~~~~~~
+~~~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\base.p
+y", line 388, in 
+_create_connection
+    return _Connectio
+nRecord(self)
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\base.p
+y", line 673, in 
+__init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\base.p
+y", line 899, in 
+__connect
+    with 
+util.safe_reraise():
+         
+~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\util\langhe
+lpers.py", line 224, 
+in __exit__
+    raise exc_value.w
+ith_traceback(exc_tb)
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\base.p
+y", line 895, in 
+__connect
+    self.dbapi_connec
+tion = connection = p
+ool._invoke_creator(s
+elf)
+                     
+                    ~
+~~~~~~~~~~~~~~~~~~~^^
+^^^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\engine\crea
+te.py", line 661, in 
+connect
+    return dialect.co
+nnect(*cargs, 
+**cparams)
+           ~~~~~~~~~~
+~~~~~^^^^^^^^^^^^^^^^
+^^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\engine\defa
+ult.py", line 629, 
+in connect
+    return self.loade
+d_dbapi.connect(*carg
+s, **cparams)  # 
+type: ignore[no-any-r
+eturn]  # NOQA: E501
+           ~~~~~~~~~~
+~~~~~~~~~~~~~~~^^^^^^
+^^^^^^^^^^^^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\p
+ymysql\connections.py
+", line 365, in 
+__init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\p
+ymysql\connections.py
+", line 681, in 
+connect
+    self._request_aut
+hentication()
+    ~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\p
+ymysql\connections.py
+", line 958, in _requ
+est_authentication
+    auth_packet = 
+self._read_packet()
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\p
+ymysql\connections.py
+", line 782, in 
+_read_packet
+    packet.raise_for_
+error()
+    ~~~~~~~~~~~~~~~~~
+~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\p
+ymysql\protocol.py", 
+line 219, in 
+raise_for_error
+    err.raise_mysql_e
+xception(self._data)
+    ~~~~~~~~~~~~~~~~~
+~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\p
+ymysql\err.py", line 
+150, in 
+raise_mysql_exception
+    raise 
+errorclass(errno, 
+errval)
+pymysql.err.Operation
+alError: (1049, 
+"Unknown database 
+'resume_builder'")
+
+The above exception 
+was the direct cause 
+of the following 
+exception:
+
+Traceback (most 
+recent call last):
+  File "C:\Users\Prad
+eep\Desktop\Jobshape-
+resume-builder\server
+_python\main.py", 
+line 21, in <module>
+    init_db()
+    ~~~~~~~^^
+  File "C:\Users\Prad
+eep\Desktop\Jobshape-
+resume-builder\server
+_python\database.py",
+ line 49, in init_db
+    Base.metadata.cre
+ate_all(bind=engine)
+    ~~~~~~~~~~~~~~~~~
+~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\sql\schema.
+py", line 5928, in 
+create_all
+    bind._run_ddl_vis
+itor(
+    ~~~~~~~~~~~~~~~~~
+~~~~^
+        
+ddl.SchemaGenerator, 
+self, checkfirst=chec
+kfirst, tables=tables
+        ^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^
+    )
+    ^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\engine\base
+.py", line 3251, in 
+_run_ddl_visitor
+    with 
+self.begin() as conn:
+         ~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\contextlib.py",
+ line 141, in 
+__enter__
+    return 
+next(self.gen)
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\engine\base
+.py", line 3241, in 
+begin
+    with 
+self.connect() as 
+conn:
+         
+~~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\engine\base
+.py", line 3277, in 
+connect
+    return self._conn
+ection_cls(self)
+           ~~~~~~~~~~
+~~~~~~~~~~^^^^^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\engine\base
+.py", line 145, in 
+__init__
+    Connection._handl
+e_dbapi_exception_noc
+onnection(
+    ~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~^
+        err, 
+dialect, engine
+        
+^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\engine\base
+.py", line 2440, in _
+handle_dbapi_exceptio
+n_noconnection
+    raise sqlalchemy_
+exception.with_traceb
+ack(exc_info[2]) 
+from e
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\engine\base
+.py", line 143, in 
+__init__
+    self._dbapi_conne
+ction = engine.raw_co
+nnection()
+                     
+        ~~~~~~~~~~~~~
+~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\engine\base
+.py", line 3301, in 
+raw_connection
+    return 
+self.pool.connect()
+           
+~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\base.p
+y", line 447, in 
+connect
+    return _Connectio
+nFairy._checkout(self
+)
+           ~~~~~~~~~~
+~~~~~~~~~~~~~~~~^^^^^
+^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\base.p
+y", line 1264, in 
+_checkout
+    fairy = _Connecti
+onRecord.checkout(poo
+l)
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\base.p
+y", line 711, in 
+checkout
+    rec = 
+pool._do_get()
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\impl.p
+y", line 177, in 
+_do_get
+    with 
+util.safe_reraise():
+         
+~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\util\langhe
+lpers.py", line 224, 
+in __exit__
+    raise exc_value.w
+ith_traceback(exc_tb)
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\impl.p
+y", line 175, in 
+_do_get
+    return self._crea
+te_connection()
+           ~~~~~~~~~~
+~~~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\base.p
+y", line 388, in 
+_create_connection
+    return _Connectio
+nRecord(self)
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\base.p
+y", line 673, in 
+__init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\base.p
+y", line 899, in 
+__connect
+    with 
+util.safe_reraise():
+         
+~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\util\langhe
+lpers.py", line 224, 
+in __exit__
+    raise exc_value.w
+ith_traceback(exc_tb)
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\pool\base.p
+y", line 895, in 
+__connect
+    self.dbapi_connec
+tion = connection = p
+ool._invoke_creator(s
+elf)
+                     
+                    ~
+~~~~~~~~~~~~~~~~~~~^^
+^^^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\engine\crea
+te.py", line 661, in 
+connect
+    return dialect.co
+nnect(*cargs, 
+**cparams)
+           ~~~~~~~~~~
+~~~~~^^^^^^^^^^^^^^^^
+^^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\s
+qlalchemy\engine\defa
+ult.py", line 629, 
+in connect
+    return self.loade
+d_dbapi.connect(*carg
+s, **cparams)  # 
+type: ignore[no-any-r
+eturn]  # NOQA: E501
+           ~~~~~~~~~~
+~~~~~~~~~~~~~~~^^^^^^
+^^^^^^^^^^^^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\p
+ymysql\connections.py
+", line 365, in 
+__init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\p
+ymysql\connections.py
+", line 681, in 
+connect
+    self._request_aut
+hentication()
+    ~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\p
+ymysql\connections.py
+", line 958, in _requ
+est_authentication
+    auth_packet = 
+self._read_packet()
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\p
+ymysql\connections.py
+", line 782, in 
+_read_packet
+    packet.raise_for_
+error()
+    ~~~~~~~~~~~~~~~~~
+~~~~~^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\p
+ymysql\protocol.py", 
+line 219, in 
+raise_for_error
+    err.raise_mysql_e
+xception(self._data)
+    ~~~~~~~~~~~~~~~~~
+~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\Prad
+eep\AppData\Local\Pro
+grams\Python\Python31
+4\Lib\site-packages\p
+ymysql\err.py", line 
+150, in 
+raise_mysql_exception
+    raise 
+errorclass(errno, 
+errval)
+sqlalchemy.exc.Operat
+ionalError: (pymysql.
+err.OperationalError)
+ (1049, "Unknown 
+database 
+'resume_builder'")
+(Background on this 
+error at: https://sql
+alche.me/e/20/e3q8)

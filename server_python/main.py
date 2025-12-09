@@ -12,7 +12,7 @@ import io
 from dotenv import load_dotenv
 from collections import Counter
 from sqlalchemy.orm import Session
-from database import SessionLocal, Resume, User, init_db
+from database import SessionLocal, Resume, User, JobTitle, init_db
 from passlib.context import CryptContext
 
 load_dotenv()
@@ -617,6 +617,17 @@ async def classify_job_title(request: JobTitleQuery):
             "job_category": "General",
             "confidence_score": 0.5
         }
+
+@app.get("/api/job-titles")
+async def get_job_titles(query: str = "", db: Session = Depends(get_db)):
+    if query:
+        # Case-insensitive partial match
+        titles = db.query(JobTitle).filter(JobTitle.title.ilike(f"%{query}%")).limit(20).all()
+    else:
+        # Return generic list if no query
+        titles = db.query(JobTitle).limit(50).all()
+    
+    return [t.title for t in titles]
 
 @app.get("/api/resumes")
 async def get_resumes(db: Session = Depends(get_db)):

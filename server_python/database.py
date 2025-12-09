@@ -45,6 +45,13 @@ class User(Base):
     full_name = Column(String(255), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+class JobTitle(Base):
+    __tablename__ = "job_titles"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String(255), unique=True, index=True)
+    category = Column(String(100), index=True)
+
 def init_db():
     Base.metadata.create_all(bind=engine)
 
