@@ -14,19 +14,26 @@ function BrowseSamples() {
     const filters = ['All', 'Marketing', 'Engineering', 'Design', 'Student', 'Business', 'Creative'];
 
     const allSamples = [
-        { id: 1, title: 'Professional', category: 'Business', desc: 'Clean and standard layout.', color: '#0f172a', layout: 'professional', role: 'Senior Accountant' },
-        { id: 2, title: 'Standout', category: 'General', desc: 'Bold name and clear columns.', color: '#3b82f6', layout: 'standout', role: 'Administrative Assistant' },
-        { id: 3, title: 'Elegant', category: 'Design', desc: 'Dark sidebar for a modern look.', color: '#1e293b', layout: 'elegant', role: 'Product Manager' },
-        { id: 4, title: 'Official', category: 'Business', desc: 'Traditional with a strong header.', color: '#1e40af', layout: 'official', role: 'Front End Developer' },
-        { id: 5, title: 'Executive', category: 'Business', desc: 'For senior leaders and managers.', color: '#10b981', layout: 'standout', role: 'Chief Executive Officer' },
-        { id: 6, title: 'Entry-Level', category: 'Student', desc: 'Great for students and new grads.', color: '#f59e0b', layout: 'simple', role: 'Marketing Intern' },
-        { id: 7, title: 'Infographic', category: 'Creative', desc: 'Visually represent your skills.', color: '#06b6d4', layout: 'creative', role: 'UX/UI Designer' },
-        { id: 8, title: 'Technical', category: 'Engineering', desc: 'For developers and engineers.', color: '#14b8a6', layout: 'technical', role: 'Senior Software Engineer' },
-        { id: 9, title: 'Minimalist', category: 'Design', desc: 'Less is more. Clean and spacious.', color: '#78716c', layout: 'simple', role: 'Architect' },
-        { id: 10, title: 'Corporate Blue', category: 'Business', desc: 'Traditional corporate style.', color: '#1e40af', layout: 'modern', role: 'Financial Analyst' },
-        { id: 11, title: 'Startup Ready', category: 'Engineering', desc: 'Modern and agile look.', color: '#f97316', layout: 'column', role: 'Full Stack Developer' },
-        { id: 12, title: 'Artistic', category: 'Creative', desc: 'Bold colors and unique layout.', color: '#db2777', layout: 'creative', role: 'Art Director' },
-        { id: 13, title: 'Growth Marketer', category: 'Marketing', desc: 'Data-driven template for growth roles.', color: '#ec4899', layout: 'modern', role: 'Growth Marketing Manager' },
+        { id: 1, title: 'Custom Template 1', category: 'General', desc: 'Imported from PDF 1', color: '#6366f1', layout: 'custom-pdf-1', role: 'Professional' },
+        { id: 2, title: 'Custom Template 2', category: 'General', desc: 'Imported from PDF 2', color: '#10b981', layout: 'custom-pdf-2', role: 'Professional' },
+        { id: 3, title: 'Custom Template 3', category: 'General', desc: 'Imported from PDF 3', color: '#f59e0b', layout: 'custom-pdf-3', role: 'Professional' },
+        { id: 4, title: 'Custom Template 4', category: 'General', desc: 'Imported from PDF 4', color: '#ef4444', layout: 'custom-pdf-4', role: 'Professional' },
+        { id: 5, title: 'Professional', category: 'Business', desc: 'Clean and standard layout.', color: '#0f172a', layout: 'professional', role: 'Senior Accountant' },
+        { id: 6, title: 'Standout', category: 'General', desc: 'Bold name and clear columns.', color: '#3b82f6', layout: 'standout', role: 'Administrative Assistant' },
+        { id: 7, title: 'Elegant', category: 'Design', desc: 'Dark sidebar for a modern look.', color: '#1e293b', layout: 'elegant', role: 'Product Manager' },
+        { id: 8, title: 'Official', category: 'Business', desc: 'Traditional with a strong header.', color: '#1e40af', layout: 'official', role: 'Front End Developer' },
+        { id: 9, title: 'Executive', category: 'Business', desc: 'For senior leaders and managers.', color: '#10b981', layout: 'standout', role: 'Chief Executive Officer' },
+        { id: 10, title: 'Entry-Level', category: 'Student', desc: 'Great for students and new grads.', color: '#f59e0b', layout: 'simple', role: 'Marketing Intern' },
+        { id: 11, title: 'Infographic', category: 'Creative', desc: 'Visually represent your skills.', color: '#06b6d4', layout: 'creative', role: 'UX/UI Designer' },
+        { id: 12, title: 'Technical', category: 'Engineering', desc: 'For developers and engineers.', color: '#14b8a6', layout: 'technical', role: 'Senior Software Engineer' },
+        { id: 13, title: 'Minimalist', category: 'Design', desc: 'Less is more. Clean and spacious.', color: '#78716c', layout: 'simple', role: 'Architect' },
+        { id: 14, title: 'Corporate Blue', category: 'Business', desc: 'Traditional corporate style.', color: '#1e40af', layout: 'modern', role: 'Financial Analyst' },
+        { id: 15, title: 'Startup Ready', category: 'Engineering', desc: 'Modern and agile look.', color: '#f97316', layout: 'column', role: 'Full Stack Developer' },
+        { id: 16, title: 'Artistic', category: 'Creative', desc: 'Bold colors and unique layout.', color: '#db2777', layout: 'creative', role: 'Art Director' },
+        { id: 17, title: 'Growth Marketer', category: 'Marketing', desc: 'Data-driven template for growth roles.', color: '#ec4899', layout: 'modern', role: 'Growth Marketing Manager' },
+        { id: 18, title: 'Minimalist Pro', category: 'Design', desc: 'Clean, centered, and typography focused.', color: '#333333', layout: 'minimalist-pro', role: 'Senior Designer' },
+
+
     ];
 
     const filteredSamples = allSamples.filter(sample => {
@@ -165,53 +172,112 @@ function BrowseSamples() {
                                 <div className="sample-card">
                                     <div className="sample-preview">
                                         <div className={`mock-doc ${sample.layout}`} style={{ '--accent-color': sample.color }}>
-                                            <div className="mock-header">
-                                                <div className="mock-name">Jordan Alex</div>
-                                                <div className="mock-contact">jordan@example.com</div>
-                                            </div>
-                                            <div className="mock-body">
-                                                <div className="mock-main">
-                                                    <div className="mock-section-title">Summary</div>
-                                                    <div className="mock-text-sm" style={{ marginBottom: '6px', lineHeight: '1.3' }}>
-                                                        Results-oriented professional with 10+ years of experience driving product vision and strategy. Proven track record of increasing revenue and user engagement.
+                                            {sample.layout === 'custom-pdf-1' ? (
+                                                // Custom Template 1: Jake Ryan Preview
+                                                <>
+                                                    <div className="mock-header">
+                                                        <div className="mock-name">Jake Ryan</div>
+                                                        <div className="mock-contact">123-456-7890</div>
                                                     </div>
+                                                    <div className="mock-body">
+                                                        <div className="mock-main">
+                                                            <div className="mock-section-title">EDUCATION</div>
+                                                            <div className="mock-text-sm">BS Computer Science</div>
+                                                            <div className="mock-text-sm">Southwestern University</div>
 
-                                                    <div className="mock-section-title">Experience</div>
-                                                    <div className="mock-job-title">{sample.role}</div>
-                                                    <div className="mock-company">Tech Solutions • 2020-Present</div>
-                                                    <div className="mock-text-sm" style={{ marginBottom: '2px' }}>Spearheaded product development lifecycle from conception to launch.</div>
-                                                    <div className="mock-text-sm">• Led cross-functional teams</div>
-                                                    <div className="mock-text-sm">• Increased revenue by 20%</div>
-                                                    <div className="mock-text-sm">• Improved user satisfaction</div>
+                                                            <div className="mock-section-title">EXPERIENCE</div>
+                                                            <div className="mock-job-title">Research Assistant</div>
+                                                            <div className="mock-company">Texas A&M University</div>
+                                                            <div className="mock-text-sm">• Developed REST API</div>
+                                                            <div className="mock-text-sm">• Built web application</div>
 
-                                                    <div className="mock-job-title" style={{ marginTop: '3px' }}>Senior Analyst</div>
-                                                    <div className="mock-company">Digital Corp • 2018-2020</div>
-                                                    <div className="mock-text-sm" style={{ marginBottom: '2px' }}>Conducted market research to identify key growth opportunities.</div>
-                                                    <div className="mock-text-sm">• Data analysis & reporting</div>
-                                                    <div className="mock-text-sm">• Strategic planning</div>
-                                                    <div className="mock-text-sm">• Market research</div>
+                                                            <div className="mock-section-title" style={{ marginTop: '4px' }}>PROJECTS</div>
+                                                            <div className="mock-text-sm">Gitlytics - Python, Flask</div>
+                                                        </div>
+                                                        <div className="mock-sidebar">
+                                                            <div className="mock-section-title">SKILLS</div>
+                                                            <div className="mock-text-sm">Java, Python</div>
+                                                            <div className="mock-text-sm">React, Node.js</div>
+                                                            <div className="mock-text-sm">PostgreSQL</div>
+                                                            <div className="mock-text-sm">Docker</div>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            ) : sample.layout === 'custom-pdf-2' ? (
+                                                // Custom Template 2: Shubham Gaurav Preview (Black Header)
+                                                <>
+                                                    <div className="mock-header" style={{ background: '#000', color: 'white', padding: '0.5rem' }}>
+                                                        <div className="mock-name" style={{ color: 'white' }}>Shubham Gaurav</div>
+                                                        <div className="mock-contact" style={{ color: 'white', fontSize: '0.7rem' }}>Senior Data Engineer</div>
+                                                    </div>
+                                                    <div className="mock-body">
+                                                        <div className="mock-main">
+                                                            <div className="mock-section-title" style={{ background: '#f0f0f0', padding: '0.25rem' }}>Profile Summary</div>
+                                                            <div className="mock-text-sm">8 years in data engineering</div>
+                                                            <div className="mock-text-sm">AWS, Azure, Snowflake</div>
 
-                                                    <div className="mock-section-title" style={{ marginTop: '4px' }}>Education</div>
-                                                    <div className="mock-text-sm">MBA, Business</div>
-                                                    <div className="mock-text-sm">BS, Computer Science</div>
-                                                </div>
-                                                <div className="mock-sidebar">
-                                                    <div className="mock-section-title">Skills</div>
-                                                    <div className="mock-text-sm">Strategy</div>
-                                                    <div className="mock-text-sm">Leadership</div>
-                                                    <div className="mock-text-sm">Analytics</div>
-                                                    <div className="mock-text-sm">Product Mgmt</div>
-                                                    <div className="mock-text-sm">Agile/Scrum</div>
-                                                    <div className="mock-text-sm">Data Analysis</div>
-                                                    <div className="mock-text-sm">Roadmapping</div>
-                                                    <div className="mock-text-sm">Team Building</div>
+                                                            <div className="mock-section-title" style={{ background: '#f0f0f0', padding: '0.25rem', marginTop: '0.5rem' }}>Skills</div>
+                                                            <div className="mock-text-sm">PySpark, SQL, Python</div>
+                                                            <div className="mock-text-sm">Databricks, Snowflake</div>
 
-                                                    <div className="mock-section-title" style={{ marginTop: '8px' }}>Languages</div>
-                                                    <div className="mock-text-sm">English</div>
-                                                    <div className="mock-text-sm">Spanish</div>
-                                                    <div className="mock-text-sm">French</div>
-                                                </div>
-                                            </div>
+                                                            <div className="mock-section-title" style={{ background: '#f0f0f0', padding: '0.25rem', marginTop: '0.5rem' }}>Experience</div>
+                                                            <div className="mock-job-title">Senior Data Engineer</div>
+                                                            <div className="mock-company">Altimetrik</div>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                // Generic preview for other templates
+                                                <>
+                                                    <div className="mock-header">
+                                                        <div className="mock-name">Jordan Alex</div>
+                                                        <div className="mock-contact">jordan@example.com</div>
+                                                    </div>
+                                                    <div className="mock-body">
+                                                        <div className="mock-main">
+                                                            <div className="mock-section-title">Summary</div>
+                                                            <div className="mock-text-sm" style={{ marginBottom: '6px', lineHeight: '1.3' }}>
+                                                                Results-oriented professional with 10+ years of experience driving product vision and strategy. Proven track record of increasing revenue and user engagement.
+                                                            </div>
+
+                                                            <div className="mock-section-title">Experience</div>
+                                                            <div className="mock-job-title">{sample.role}</div>
+                                                            <div className="mock-company">Tech Solutions • 2020-Present</div>
+                                                            <div className="mock-text-sm" style={{ marginBottom: '2px' }}>Spearheaded product development lifecycle from conception to launch.</div>
+                                                            <div className="mock-text-sm">• Led cross-functional teams</div>
+                                                            <div className="mock-text-sm">• Increased revenue by 20%</div>
+                                                            <div className="mock-text-sm">• Improved user satisfaction</div>
+
+                                                            <div className="mock-job-title" style={{ marginTop: '3px' }}>Senior Analyst</div>
+                                                            <div className="mock-company">Digital Corp • 2018-2020</div>
+                                                            <div className="mock-text-sm" style={{ marginBottom: '2px' }}>Conducted market research to identify key growth opportunities.</div>
+                                                            <div className="mock-text-sm">• Data analysis & reporting</div>
+                                                            <div className="mock-text-sm">• Strategic planning</div>
+                                                            <div className="mock-text-sm">• Market research</div>
+
+                                                            <div className="mock-section-title" style={{ marginTop: '4px' }}>Education</div>
+                                                            <div className="mock-text-sm">MBA, Business</div>
+                                                            <div className="mock-text-sm">BS, Computer Science</div>
+                                                        </div>
+                                                        <div className="mock-sidebar">
+                                                            <div className="mock-section-title">Skills</div>
+                                                            <div className="mock-text-sm">Strategy</div>
+                                                            <div className="mock-text-sm">Leadership</div>
+                                                            <div className="mock-text-sm">Analytics</div>
+                                                            <div className="mock-text-sm">Product Mgmt</div>
+                                                            <div className="mock-text-sm">Agile/Scrum</div>
+                                                            <div className="mock-text-sm">Data Analysis</div>
+                                                            <div className="mock-text-sm">Roadmapping</div>
+                                                            <div className="mock-text-sm">Team Building</div>
+
+                                                            <div className="mock-section-title" style={{ marginTop: '8px' }}>Languages</div>
+                                                            <div className="mock-text-sm">English</div>
+                                                            <div className="mock-text-sm">Spanish</div>
+                                                            <div className="mock-text-sm">French</div>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="sample-info">

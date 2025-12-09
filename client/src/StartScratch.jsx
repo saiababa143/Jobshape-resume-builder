@@ -8,6 +8,8 @@ import html2pdf from 'html2pdf.js';
 import { seniorProductManagerData } from './mockData';
 import AIAssistant from './AIAssistant';
 import AuthModal from './AuthModal';
+import { jakeRyanData } from './jakeRyanData';
+import { shubhamGauravData } from './shubhamGauravData';
 
 function StartScratch() {
     const [activeSection, setActiveSection] = useState('contact');
@@ -21,6 +23,17 @@ function StartScratch() {
     const [user, setUser] = useState(null);
     const [pendingAction, setPendingAction] = useState(null); // 'download' or 'save'
     const [isSaving, setIsSaving] = useState(false);
+
+    // --- Add Section State ---
+    const [showSectionDropdown, setShowSectionDropdown] = useState(false);
+    const [availableSections, setAvailableSections] = useState({
+        projects: false,
+        courses: false,
+        certifications: false,
+        awards: false,
+        languages: false,
+        publications: false
+    });
 
     // --- State for Resume Content ---
     const [resumeData, setResumeData] = useState({
@@ -106,6 +119,16 @@ function StartScratch() {
                 template: layout,
                 color: color
             }));
+
+            // Auto-load Jake Ryan Data for Custom Template 1 (ID 1)
+            if (layout === 'custom-pdf-1') {
+                setResumeData(jakeRyanData);
+            }
+
+            // Auto-load Shubham Gaurav Data for Custom Template 2 (ID 2)
+            if (layout === 'custom-pdf-2') {
+                setResumeData(shubhamGauravData);
+            }
         }
     }, [location.state]);
 
@@ -170,6 +193,31 @@ function StartScratch() {
 
     const removeSkill = (index) => {
         setResumeData(prev => ({ ...prev, skills: prev.skills.filter((_, i) => i !== index) }));
+    };
+
+    // Add Section Handler
+    const addSection = (sectionType) => {
+        setAvailableSections(prev => ({ ...prev, [sectionType]: true }));
+
+        // Initialize section data if it doesn't exist
+        if (!resumeData[sectionType]) {
+            const defaultData = {
+                projects: [{ id: Date.now(), title: "Project Title", company: "", date: "", description: "" }],
+                courses: [{ id: Date.now(), title: "Course Name", institution: "", date: "", description: "" }],
+                certifications: [{ id: Date.now(), title: "Certification Name", institution: "", date: "", description: "" }],
+                awards: [{ id: Date.now(), title: "Award Name", organization: "", date: "", description: "" }],
+                languages: [{ id: Date.now(), language: "Language", proficiency: "Proficiency Level" }],
+                publications: [{ id: Date.now(), title: "Publication Title", publisher: "", date: "", description: "" }]
+            };
+
+            setResumeData(prev => ({
+                ...prev,
+                [sectionType]: defaultData[sectionType]
+            }));
+        }
+
+        setShowSectionDropdown(false);
+        setActiveSection(sectionType);
     };
 
     const handleDownloadClick = () => {
@@ -381,6 +429,84 @@ function StartScratch() {
                         </button>
                     </div>
                 );
+            case 'projects':
+                return (
+                    <div className="editor-form-container">
+                        <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#0f172a' }}>Projects</h2>
+                        <p style={{ color: '#64748b', marginBottom: '2rem' }}>Showcase your key projects and achievements.</p>
+
+                        {resumeData.projects && resumeData.projects.map((project) => (
+                            <div key={project.id} className="form-section" style={{ marginBottom: '2rem', padding: '1.5rem', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+                                <div className="form-group">
+                                    <label>Project Title</label>
+                                    <input type="text" value={project.title} onChange={(e) => {
+                                        setResumeData(prev => ({
+                                            ...prev,
+                                            projects: prev.projects.map(p => p.id === project.id ? { ...p, title: e.target.value } : p)
+                                        }));
+                                    }} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Date</label>
+                                    <input type="text" value={project.date} onChange={(e) => {
+                                        setResumeData(prev => ({
+                                            ...prev,
+                                            projects: prev.projects.map(p => p.id === project.id ? { ...p, date: e.target.value } : p)
+                                        }));
+                                    }} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Description</label>
+                                    <textarea value={project.description} onChange={(e) => {
+                                        setResumeData(prev => ({
+                                            ...prev,
+                                            projects: prev.projects.map(p => p.id === project.id ? { ...p, description: e.target.value } : p)
+                                        }));
+                                    }} rows={4} />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                );
+            case 'courses':
+                return (
+                    <div className="editor-form-container">
+                        <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '0.5rem', color: '#0f172a' }}>Courses & Certifications</h2>
+                        <p style={{ color: '#64748b', marginBottom: '2rem' }}>List your relevant courses and certifications.</p>
+
+                        {resumeData.courses && resumeData.courses.map((course) => (
+                            <div key={course.id} className="form-section" style={{ marginBottom: '2rem', padding: '1.5rem', border: '1px solid #e2e8f0', borderRadius: '8px' }}>
+                                <div className="form-group">
+                                    <label>Course/Certification Name</label>
+                                    <input type="text" value={course.title} onChange={(e) => {
+                                        setResumeData(prev => ({
+                                            ...prev,
+                                            courses: prev.courses.map(c => c.id === course.id ? { ...c, title: e.target.value } : c)
+                                        }));
+                                    }} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Institution</label>
+                                    <input type="text" value={course.institution} onChange={(e) => {
+                                        setResumeData(prev => ({
+                                            ...prev,
+                                            courses: prev.courses.map(c => c.id === course.id ? { ...c, institution: e.target.value } : c)
+                                        }));
+                                    }} />
+                                </div>
+                                <div className="form-group">
+                                    <label>Date</label>
+                                    <input type="text" value={course.date} onChange={(e) => {
+                                        setResumeData(prev => ({
+                                            ...prev,
+                                            courses: prev.courses.map(c => c.id === course.id ? { ...c, date: e.target.value } : c)
+                                        }));
+                                    }} />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                );
             default:
                 return <div>Select a section to edit</div>;
         }
@@ -450,6 +576,71 @@ function StartScratch() {
                         <button className={`nav-item ${activeSection === 'summary' ? 'active' : ''}`} onClick={() => setActiveSection('summary')}>
                             <FileText size={18} /> Summary
                         </button>
+
+                        <div style={{ position: 'relative', marginTop: '1rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
+                            <button
+                                className="nav-item"
+                                style={{ color: designConfig.color, fontWeight: 600, width: '100%' }}
+                                onClick={() => setShowSectionDropdown(!showSectionDropdown)}
+                            >
+                                <Plus size={18} /> Add Section
+                            </button>
+
+                            {showSectionDropdown && (
+                                <div style={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: 0,
+                                    right: 0,
+                                    backgroundColor: 'white',
+                                    border: '1px solid #e2e8f0',
+                                    borderRadius: '8px',
+                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                                    zIndex: 1000,
+                                    marginTop: '0.5rem',
+                                    overflow: 'hidden'
+                                }}>
+                                    {!availableSections.projects && (
+                                        <button
+                                            onClick={() => addSection('projects')}
+                                            style={{
+                                                width: '100%',
+                                                padding: '0.75rem 1rem',
+                                                textAlign: 'left',
+                                                border: 'none',
+                                                background: 'none',
+                                                cursor: 'pointer',
+                                                fontSize: '0.9rem'
+                                            }}
+                                            onMouseEnter={(e) => e.target.style.backgroundColor = '#f8fafc'}
+                                            onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                                        >
+                                            <Folder size={16} style={{ marginRight: '0.5rem', display: 'inline', verticalAlign: 'middle' }} />
+                                            Projects
+                                        </button>
+                                    )}
+                                    {!availableSections.courses && (
+                                        <button
+                                            onClick={() => addSection('courses')}
+                                            style={{
+                                                width: '100%',
+                                                padding: '0.75rem 1rem',
+                                                textAlign: 'left',
+                                                border: 'none',
+                                                background: 'none',
+                                                cursor: 'pointer',
+                                                fontSize: '0.9rem'
+                                            }}
+                                            onMouseEnter={(e) => e.target.style.backgroundColor = '#f8fafc'}
+                                            onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                                        >
+                                            <GraduationCap size={16} style={{ marginRight: '0.5rem', display: 'inline', verticalAlign: 'middle' }} />
+                                            Courses & Certifications
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
                     </nav>
 
                     <div className="sidebar-divider" style={{ height: '1px', backgroundColor: '#e2e8f0', margin: '1.5rem 0' }}></div>
@@ -515,9 +706,7 @@ function StartScratch() {
                             lineHeight: designConfig.spacing,
                             fontSize: `${designConfig.fontSize}px`,
                             color: '#1e293b',
-                            '--template-color': designConfig.color,
-                            transform: 'scale(0.85)',
-                            transformOrigin: 'top center'
+                            '--template-color': designConfig.color
                         }}
                     >
                         {/* Resume Header */}
@@ -583,6 +772,40 @@ function StartScratch() {
                                 ))}
                             </div>
                         </div>
+
+                        {/* Projects */}
+                        {resumeData.projects && resumeData.projects.length > 0 && (
+                            <div className="resume-section section-projects">
+                                <h2 className="resume-section-title" style={{ color: designConfig.color, borderBottomColor: designConfig.color }}>Projects</h2>
+                                {resumeData.projects.map((project) => (
+                                    <div key={project.id} className="resume-item">
+                                        <div className="item-header">
+                                            <h3 className="item-title">{project.title}</h3>
+                                            {project.date && <span className="item-date">{project.date}</span>}
+                                        </div>
+                                        {project.company && <div className="item-subtitle" style={{ fontWeight: 600 }}>{project.company}</div>}
+                                        <p className="resume-text" style={{ whiteSpace: 'pre-line' }}>{project.description}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* Courses */}
+                        {resumeData.courses && resumeData.courses.length > 0 && (
+                            <div className="resume-section section-courses">
+                                <h2 className="resume-section-title" style={{ color: designConfig.color, borderBottomColor: designConfig.color }}>Courses & Certifications</h2>
+                                {resumeData.courses.map((course) => (
+                                    <div key={course.id} className="resume-item">
+                                        <div className="item-header">
+                                            <h3 className="item-title">{course.title}</h3>
+                                            {course.date && <span className="item-date">{course.date}</span>}
+                                        </div>
+                                        {course.institution && <div className="item-subtitle">{course.institution}</div>}
+                                        {course.description && <p className="resume-text">{course.description}</p>}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </aside>
             </div>
