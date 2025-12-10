@@ -120,8 +120,8 @@ function StartScratch() {
                 color: color
             }));
 
-            // Auto-load Jake Ryan Data for Custom Template 1 (ID 1)
-            if (layout === 'custom-pdf-1') {
+            // Auto-load Jake Ryan Data for Custom Template 4 (Jake Overleaf)
+            if (layout === 'custom-pdf-4') {
                 setResumeData(jakeRyanData);
             }
 
@@ -702,7 +702,8 @@ function StartScratch() {
                         className={`resume-paper ${designConfig.template}`}
                         ref={resumeRef}
                         style={{
-                            fontFamily: designConfig.font,
+                            // Don't override font for custom-pdf templates - let CSS handle it
+                            ...(designConfig.template.startsWith('custom-pdf') ? {} : { fontFamily: designConfig.font }),
                             lineHeight: designConfig.spacing,
                             fontSize: `${designConfig.fontSize}px`,
                             color: '#1e293b',

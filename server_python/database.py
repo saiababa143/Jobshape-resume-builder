@@ -3,8 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
-# DATABASE_URL = "sqlite:///./resumes.db"
-DATABASE_URL = "mysql+pymysql://root:@localhost/resume_builder"
+DATABASE_URL = "sqlite:///./resumes.db"
+# DATABASE_URL = "mysql+pymysql://root:@localhost/resume_builder"
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

@@ -14,10 +14,10 @@ function BrowseSamples() {
     const filters = ['All', 'Marketing', 'Engineering', 'Design', 'Student', 'Business', 'Creative'];
 
     const allSamples = [
-        { id: 1, title: 'Custom Template 1', category: 'General', desc: 'Imported from PDF 1', color: '#6366f1', layout: 'custom-pdf-1', role: 'Professional' },
-        { id: 2, title: 'Custom Template 2', category: 'General', desc: 'Imported from PDF 2', color: '#10b981', layout: 'custom-pdf-2', role: 'Professional' },
-        { id: 3, title: 'Custom Template 3', category: 'General', desc: 'Imported from PDF 3', color: '#f59e0b', layout: 'custom-pdf-3', role: 'Professional' },
-        { id: 4, title: 'Custom Template 4', category: 'General', desc: 'Imported from PDF 4', color: '#ef4444', layout: 'custom-pdf-4', role: 'Professional' },
+        { id: 1, title: 'official', category: 'General', desc: 'clean and modern layout', color: '#6366f1', layout: 'custom-pdf-1', role: 'Professional' },
+        { id: 2, title: 'elegant', category: 'General', desc: 'Traditional with a strong header.', color: '#10b981', layout: 'custom-pdf-2', role: 'Professional' },
+        { id: 3, title: 'professional', category: 'General', desc: 'For developers and engineers', color: '#f59e0b', layout: 'custom-pdf-3', role: 'Professional' },
+        { id: 4, title: 'Jake Overleaf', category: 'Engineering', desc: 'Clean LaTeX-style template for technical roles', color: '#000000', layout: 'custom-pdf-4', role: 'Software Engineer' },
         { id: 5, title: 'Professional', category: 'Business', desc: 'Clean and standard layout.', color: '#0f172a', layout: 'professional', role: 'Senior Accountant' },
         { id: 6, title: 'Standout', category: 'General', desc: 'Bold name and clear columns.', color: '#3b82f6', layout: 'standout', role: 'Administrative Assistant' },
         { id: 7, title: 'Elegant', category: 'Design', desc: 'Dark sidebar for a modern look.', color: '#1e293b', layout: 'elegant', role: 'Product Manager' },
@@ -172,8 +172,8 @@ function BrowseSamples() {
                                 <div className="sample-card">
                                     <div className="sample-preview">
                                         <div className={`mock-doc ${sample.layout}`} style={{ '--accent-color': sample.color }}>
-                                            {sample.layout === 'custom-pdf-1' ? (
-                                                // Custom Template 1: Jake Ryan Preview
+                                            {sample.layout === 'custom-pdf-4' ? (
+                                                // Custom Template 4: Jake Overleaf Preview
                                                 <>
                                                     <div className="mock-header">
                                                         <div className="mock-name">Jake Ryan</div>
